@@ -10,3 +10,4 @@ research/
 node_modules/
 *.apk
 *.xapk
+.roster-result.json

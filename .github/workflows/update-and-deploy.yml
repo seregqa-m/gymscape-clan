@@ -5,15 +5,13 @@ on:
     branches: [main]
   schedule:
     - cron: '0 21 * * *' # 00:00 Europe/Moscow; Actions may queue the job.
+  issues:
+    types: [opened]
   workflow_dispatch:
-    inputs:
-      collect:
-        description: 'Capture today’s midnight snapshot (00:00–05:59 Moscow only)'
-        type: boolean
-        default: false
 
 permissions:
   contents: write
+  issues: write
   pages: write
   id-token: write
 
@@ -23,6 +21,7 @@ concurrency:
 
 jobs:
   update-and-deploy:
+    if: github.event_name != 'issues' || startsWith(github.event.issue.title, '[roster] ')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
@@ -37,17 +36,21 @@ jobs:
           python-version: '3.12'
       - name: Verify delta calculations
         run: python -m unittest discover -s tests -v
+      - name: Process public roster requests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/manage_roster.py
       - name: Collect public counters
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.collect)
-        run: python scripts/collect.py --mode daily
+        # A pending scheduled run may be superseded by an issue/push. Any run
+        # in the midnight window can fill the same idempotent daily boundary.
+        run: python scripts/collect.py --mode auto
       - name: Build dashboard data
         run: python scripts/build_data.py
       - name: Keep snapshots in Git
-        if: github.event_name != 'push'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add history site/data/dashboard.json
+          git add players.json history site/data/dashboard.json
           if ! git diff --cached --quiet; then
             git commit -m 'Save GymScape snapshot'
             git push origin HEAD:main
@@ -59,3 +62,7 @@ jobs:
       - name: Publish
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Close processed roster requests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/manage_roster.py --close-processed

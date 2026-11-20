@@ -86,6 +86,11 @@ def fetch_player(name, config, known_id=None):
 def collect(mode, root=ROOT):
     now = datetime.now(timezone.utc)
     local = now.astimezone(MSK)
+    if mode == "auto":
+        if local.hour >= 6:
+            print("Outside midnight capture window; no daily snapshot needed")
+            return
+        mode = "daily"
     baseline_path = root / "history/baseline.json"
     if mode == "baseline":
         path = baseline_path
@@ -101,11 +106,13 @@ def collect(mode, root=ROOT):
         print("Snapshot already exists; left unchanged:", path.name)
         return
     names = read_json(root / "players.json")
-    if not names or len({n.casefold() for n in names}) != len(names):
+    if len({n.casefold() for n in names}) != len(names):
         raise ValueError("Roster must contain unique player names")
     previous = [read_json(baseline_path)] if baseline_path.exists() else []
     previous += sorted((read_json(p) for p in (root / "history/daily").glob("*.json")),
                        key=lambda s: s["captured_at"])
+    previous += [read_json(p) for p in (root / "history/enrollments").glob("*.json")]
+    previous.sort(key=lambda s: s["captured_at"])
     known_ids = {}
     for snapshot in previous:
         for player in snapshot["players"]:
@@ -116,7 +123,7 @@ def collect(mode, root=ROOT):
     with ThreadPoolExecutor(max_workers=3) as pool:
         players = list(pool.map(lambda n: fetch_player(n, config, known_ids.get(n)), names))
     # Network/auth failures abort the entire capture; no false zero deltas.
-    if not any(p["status"] == "ok" for p in players):
+    if names and not any(p["status"] == "ok" for p in players):
         raise ValueError("No player counters returned; refusing an empty snapshot")
     snapshot = {"schema_version": 1, "kind": mode, "timezone": "Europe/Moscow",
                 "captured_at": datetime.now(timezone.utc).isoformat(),
@@ -130,6 +137,6 @@ def collect(mode, root=ROOT):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=("baseline", "daily"), required=True)
+    parser.add_argument("--mode", choices=("baseline", "daily", "auto"), required=True)
     args = parser.parse_args()
     collect(args.mode)

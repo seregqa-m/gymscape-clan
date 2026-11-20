@@ -18,7 +18,7 @@
         <svg class="brand-mark" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 9h5v14H5zM22 9h5v14h-5zM1 12h3v8H1zM28 12h3v8h-3zM11 14h10v4H11z" fill="currentColor"/></svg>
         <span>GYMSCAPE<span class="brand-divider">/</span><span class="brand-clan">CLAN</span></span>
       </a>
-      <div class="schedule-label"><span class="status-dot"></span>Снимок каждый день в 00:00 МСК</div>
+      <div class="topbar-actions"><div class="schedule-label"><span class="status-dot"></span>Снимок каждый день в 00:00 МСК</div><button id="manage-participants" class="participants-toggle" type="button" aria-controls="participants" aria-expanded="false">Участники</button></div>
     </header>
 
     <main>
@@ -32,6 +32,20 @@
           <div class="big-symbol" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
           <p id="updated-at" class="updated-at">Загружаем статистику…</p>
         </div>
+      </section>
+
+      <section id="participants" class="participants-panel" aria-labelledby="participants-title" hidden>
+        <div class="participants-heading"><div><p class="section-kicker">Состав клана</p><h2 id="participants-title">Участники</h2></div><button id="close-participants" class="quiet-button" type="button" aria-label="Закрыть управление участниками">Закрыть</button></div>
+        <p id="participants-help" class="participants-help">Откроется готовая заявка на GitHub. Нужен аккаунт GitHub, права на репозиторий не нужны. После отправки список обновится автоматически — обычно за пару минут.</p>
+        <form id="participant-add-form" class="participant-add-form" novalidate>
+          <div class="participant-input-wrap"><label for="participant-nickname">Ник в GymScape</label><input id="participant-nickname" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="64" placeholder="Например, millennial falcon" aria-describedby="participant-name-hint participant-feedback" required><span id="participant-name-hint">1–64 символа: латиница, цифры, пробелы, точка, дефис или подчёркивание. Первый символ — буква или цифра.</span></div>
+          <button id="participant-add-button" class="primary-button" type="submit" disabled>Добавить</button>
+        </form>
+        <p id="participant-feedback" class="participant-feedback" aria-live="polite" hidden></p>
+        <a id="participant-add-request" class="request-link" target="_blank" rel="noopener" hidden>Открыть подготовленную заявку на GitHub</a>
+        <div class="participants-list-heading"><h3>Сейчас отслеживаем</h3><span id="participants-count">—</span></div>
+        <ul id="participants-list" class="participants-list"><li class="participants-loading">Загружаем участников…</li></ul>
+        <p class="participants-footnote">Удаление прекращает отслеживание игрока. Собранная история сохраняется.</p>
       </section>
 
       <div id="load-error" class="error-state" role="alert" hidden>

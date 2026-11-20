@@ -2,9 +2,9 @@
   "schema_version": 1,
   "timezone": "Europe/Moscow",
   "schedule": "00:00 МСК",
-  "generated_at": "2026-11-20T09:59:57.341199+00:00",
+  "generated_at": "2026-11-20T09:59:57.340690+00:00",
   "baseline_at": "2026-11-20T09:59:57.341199+00:00",
-  "latest_at": "2026-11-20T09:59:57.341199+00:00",
+  "latest_at": "2026-11-20T09:59:57.340690+00:00",
   "exercises": [
     {
       "id": "jumpingJacks",
@@ -235,7 +235,8 @@
           "hitpoints": 68296,
           "woodcutting": 99595
         }
-      }
+      },
+      "captured_at": "2026-11-20T09:59:54.662926+00:00"
     },
     {
       "username": "Alexdander",
@@ -260,7 +261,8 @@
           "hitpoints": 62396,
           "woodcutting": 37475
         }
-      }
+      },
+      "captured_at": "2026-11-20T09:59:54.676866+00:00"
     },
     {
       "username": "ARRRTTT",
@@ -285,7 +287,8 @@
           "hitpoints": 58773,
           "woodcutting": 49090
         }
-      }
+      },
+      "captured_at": "2026-11-20T09:59:54.670610+00:00"
     },
     {
       "username": "Mishqa",
@@ -310,7 +313,8 @@
           "hitpoints": 44227,
           "woodcutting": 90310
         }
-      }
+      },
+      "captured_at": "2026-11-20T09:59:55.370827+00:00"
     },
     {
       "username": "Sasaii",
@@ -335,7 +339,8 @@
           "hitpoints": 24449,
           "woodcutting": 27120
         }
-      }
+      },
+      "captured_at": "2026-11-20T09:59:55.352839+00:00"
     },
     {
       "username": "elejke",
@@ -360,7 +365,8 @@
           "hitpoints": 28663,
           "woodcutting": 167190
         }
-      }
+      },
+      "captured_at": "2026-11-20T09:59:55.317316+00:00"
     },
     {
       "username": "Relca",
@@ -385,7 +391,8 @@
           "hitpoints": 20651,
           "woodcutting": 73540
         }
-      }
+      },
+      "captured_at": "2026-11-20T09:59:56.016113+00:00"
     },
     {
       "username": "D1VAn",
@@ -410,19 +417,22 @@
           "hitpoints": 20867,
           "woodcutting": 35335
         }
-      }
+      },
+      "captured_at": "2026-11-20T09:59:56.018750+00:00"
     },
     {
       "username": "onepunch",
       "canonical_username": "onepunch",
       "status": "missing",
-      "profile": null
+      "profile": null,
+      "captured_at": "2026-11-20T09:59:56.035261+00:00"
     },
     {
       "username": "HawkHunter9892",
       "canonical_username": "HawkHunter9892",
       "status": "missing",
-      "profile": null
+      "profile": null,
+      "captured_at": "2026-11-20T09:59:56.680431+00:00"
     },
     {
       "username": "keanuwind",
@@ -447,7 +457,8 @@
           "hitpoints": 2901,
           "woodcutting": 191180
         }
-      }
+      },
+      "captured_at": "2026-11-20T09:59:56.745885+00:00"
     },
     {
       "username": "millennial falcon",
@@ -472,7 +483,8 @@
           "hitpoints": 2915,
           "woodcutting": 12115
         }
-      }
+      },
+      "captured_at": "2026-11-20T09:59:56.891247+00:00"
     },
     {
       "username": "dimqa",
@@ -497,7 +509,8 @@
           "hitpoints": 2094,
           "woodcutting": 0
         }
-      }
+      },
+      "captured_at": "2026-11-20T09:59:57.340690+00:00"
     }
   ],
   "periods": [
@@ -506,9 +519,9 @@
       "label": "Стартовый тотал",
       "available": true,
       "from": null,
-      "to": "2026-11-20T09:59:57.341199+00:00",
+      "to": "2026-11-20T09:59:57.340690+00:00",
       "partial": false,
-      "description": "Первый снимок рейтинга. Не входит в дневной прогресс.",
+      "description": "Первый доступный снимок каждого участника. Дата старта может различаться; тотал не входит в дневной прогресс.",
       "rows": [
         {
           "username": "seregqa",
@@ -525,7 +538,10 @@
             "squats": 2679,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:54.662926+00:00",
+          "captured_at": "2026-11-20T09:59:54.662926+00:00"
         },
         {
           "username": "Alexdander",
@@ -541,7 +557,10 @@
             "squats": 2755,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:54.676866+00:00",
+          "captured_at": "2026-11-20T09:59:54.676866+00:00"
         },
         {
           "username": "ARRRTTT",
@@ -557,7 +576,10 @@
             "squats": 1799,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:54.670610+00:00",
+          "captured_at": "2026-11-20T09:59:54.670610+00:00"
         },
         {
           "username": "Mishqa",
@@ -573,7 +595,10 @@
             "squats": 2112,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:55.370827+00:00",
+          "captured_at": "2026-11-20T09:59:55.370827+00:00"
         },
         {
           "username": "Sasaii",
@@ -591,7 +616,10 @@
             "squats": 1628,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:55.352839+00:00",
+          "captured_at": "2026-11-20T09:59:55.352839+00:00"
         },
         {
           "username": "elejke",
@@ -605,7 +633,10 @@
             "sitUps": 837,
             "squats": 1393
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:55.317316+00:00",
+          "captured_at": "2026-11-20T09:59:55.317316+00:00"
         },
         {
           "username": "Relca",
@@ -622,7 +653,10 @@
             "squats": 1752,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:56.016113+00:00",
+          "captured_at": "2026-11-20T09:59:56.016113+00:00"
         },
         {
           "username": "D1VAn",
@@ -637,19 +671,28 @@
             "sitUps": 636,
             "squats": 819
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:56.018750+00:00",
+          "captured_at": "2026-11-20T09:59:56.018750+00:00"
         },
         {
           "username": "onepunch",
           "status": "missing",
           "values": {},
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": null,
+          "captured_at": null
         },
         {
           "username": "HawkHunter9892",
           "status": "missing",
           "values": {},
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": null,
+          "captured_at": null
         },
         {
           "username": "keanuwind",
@@ -662,7 +705,10 @@
             "squats": 188,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:56.745885+00:00",
+          "captured_at": "2026-11-20T09:59:56.745885+00:00"
         },
         {
           "username": "millennial falcon",
@@ -676,7 +722,10 @@
             "squats": 111,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:56.891247+00:00",
+          "captured_at": "2026-11-20T09:59:56.891247+00:00"
         },
         {
           "username": "dimqa",
@@ -684,7 +733,10 @@
           "values": {
             "tutorial": 1
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:57.340690+00:00",
+          "captured_at": "2026-11-20T09:59:57.340690+00:00"
         }
       ]
     },
@@ -693,9 +745,9 @@
       "label": "Текущий тотал",
       "available": true,
       "from": null,
-      "to": "2026-11-20T09:59:57.341199+00:00",
+      "to": "2026-11-20T09:59:57.340690+00:00",
       "partial": false,
-      "description": "Счётчики публичного рейтинга на момент последнего снимка.",
+      "description": "Последний доступный снимок каждого участника, включая снимки при добавлении.",
       "rows": [
         {
           "username": "seregqa",
@@ -712,7 +764,10 @@
             "squats": 2679,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:54.662926+00:00",
+          "captured_at": "2026-11-20T09:59:54.662926+00:00"
         },
         {
           "username": "Alexdander",
@@ -728,7 +783,10 @@
             "squats": 2755,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:54.676866+00:00",
+          "captured_at": "2026-11-20T09:59:54.676866+00:00"
         },
         {
           "username": "ARRRTTT",
@@ -744,7 +802,10 @@
             "squats": 1799,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:54.670610+00:00",
+          "captured_at": "2026-11-20T09:59:54.670610+00:00"
         },
         {
           "username": "Mishqa",
@@ -760,7 +821,10 @@
             "squats": 2112,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:55.370827+00:00",
+          "captured_at": "2026-11-20T09:59:55.370827+00:00"
         },
         {
           "username": "Sasaii",
@@ -778,7 +842,10 @@
             "squats": 1628,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:55.352839+00:00",
+          "captured_at": "2026-11-20T09:59:55.352839+00:00"
         },
         {
           "username": "elejke",
@@ -792,7 +859,10 @@
             "sitUps": 837,
             "squats": 1393
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:55.317316+00:00",
+          "captured_at": "2026-11-20T09:59:55.317316+00:00"
         },
         {
           "username": "Relca",
@@ -809,7 +879,10 @@
             "squats": 1752,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:56.016113+00:00",
+          "captured_at": "2026-11-20T09:59:56.016113+00:00"
         },
         {
           "username": "D1VAn",
@@ -824,19 +897,28 @@
             "sitUps": 636,
             "squats": 819
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:56.018750+00:00",
+          "captured_at": "2026-11-20T09:59:56.018750+00:00"
         },
         {
           "username": "onepunch",
           "status": "missing",
           "values": {},
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:56.035261+00:00",
+          "captured_at": "2026-11-20T09:59:56.035261+00:00"
         },
         {
           "username": "HawkHunter9892",
           "status": "missing",
           "values": {},
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:56.680431+00:00",
+          "captured_at": "2026-11-20T09:59:56.680431+00:00"
         },
         {
           "username": "keanuwind",
@@ -849,7 +931,10 @@
             "squats": 188,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:56.745885+00:00",
+          "captured_at": "2026-11-20T09:59:56.745885+00:00"
         },
         {
           "username": "millennial falcon",
@@ -863,7 +948,10 @@
             "squats": 111,
             "tutorial": 2
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:56.891247+00:00",
+          "captured_at": "2026-11-20T09:59:56.891247+00:00"
         },
         {
           "username": "dimqa",
@@ -871,7 +959,10 @@
           "values": {
             "tutorial": 1
           },
-          "anomalies": []
+          "anomalies": [],
+          "from": null,
+          "to": "2026-11-20T09:59:57.340690+00:00",
+          "captured_at": "2026-11-20T09:59:57.340690+00:00"
         }
       ]
     },
@@ -880,7 +971,7 @@
       "label": "Последний интервал",
       "available": false,
       "from": null,
-      "to": "2026-11-20T09:59:57.341199+00:00",
+      "to": "2026-11-20T09:59:57.340690+00:00",
       "partial": true,
       "description": "Разница появится после следующего снимка в 00:00 МСК.",
       "rows": []
@@ -890,7 +981,7 @@
       "label": "7 дней",
       "available": false,
       "from": null,
-      "to": "2026-11-20T09:59:57.341199+00:00",
+      "to": "2026-11-20T09:59:57.340690+00:00",
       "partial": true,
       "description": "Разница появится после следующего снимка в 00:00 МСК.",
       "rows": []
@@ -900,7 +991,7 @@
       "label": "30 дней",
       "available": false,
       "from": null,
-      "to": "2026-11-20T09:59:57.341199+00:00",
+      "to": "2026-11-20T09:59:57.340690+00:00",
       "partial": true,
       "description": "Разница появится после следующего снимка в 00:00 МСК.",
       "rows": []

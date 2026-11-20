@@ -10,6 +10,8 @@ const dateOnly = new Intl.DateTimeFormat("ru-RU", {
   timeZone: "Europe/Moscow", day: "numeric", month: "short",
 });
 const ignoredExercises = new Set(["tutorial", "wilderness"]);
+const rosterIssueURL = "https://github.com/seregqa-m/gymscape-clan/issues/new";
+const nicknamePattern = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,63}$/;
 const state = { data: null, period: "baseline", exercise: "pushUps", player: "seregqa", search: "" };
 
 function node(tag, className, content) {
@@ -76,6 +78,90 @@ function formatValue(value, valueUnit = unit()) {
 function shownName(username) {
   const player = state.data.players.find((item) => item.username === username);
   return player?.canonical_username || username;
+}
+
+function rosterRequestURL(action, username) {
+  const url = new URL(rosterIssueURL);
+  url.search = new URLSearchParams({
+    title: `[roster] ${action} ${username}`,
+    body: JSON.stringify({ gymscape_roster: 1, action, username }),
+  }).toString();
+  return url.toString();
+}
+
+function validateNewParticipant(rawName) {
+  const username = rawName.trim();
+  if (!nicknamePattern.test(username)) {
+    return { error: "Укажи ник длиной от 1 до 64 символов. Разрешены латиница, цифры, пробелы, точка, дефис и подчёркивание; первым должна быть буква или цифра." };
+  }
+  if (!state.data) return { error: "Дождись загрузки списка участников и попробуй ещё раз." };
+  const lower = username.toLowerCase();
+  const duplicate = state.data.players.find((player) =>
+    player.username.toLowerCase() === lower || player.canonical_username?.toLowerCase() === lower);
+  if (duplicate) return { error: `${shownName(duplicate.username)} уже есть в списке участников.` };
+  return { username };
+}
+
+function setParticipantFeedback(message, isError = false) {
+  const feedback = $("participant-feedback");
+  feedback.hidden = !message;
+  feedback.textContent = message;
+  feedback.classList.toggle("is-error", isError);
+  $("participant-nickname").setAttribute("aria-invalid", String(isError));
+}
+
+function renderParticipants() {
+  const list = $("participants-list");
+  list.replaceChildren();
+  $("participants-count").textContent = numeric.format(state.data.players.length);
+  $("participant-add-button").disabled = false;
+  for (const player of state.data.players) {
+    const item = node("li", "participant-item");
+    const main = node("div", "participant-item-main");
+    const name = node("span", "participant-item-name", shownName(player.username));
+    const remove = node("button", "quiet-button participant-remove", "Убрать");
+    remove.type = "button";
+    remove.setAttribute("aria-label", `Убрать ${shownName(player.username)} из отслеживания`);
+    remove.setAttribute("aria-expanded", "false");
+    const confirmation = node("div", "participant-confirmation");
+    confirmation.hidden = true;
+    const text = node("p", "", `Перестать отслеживать ${shownName(player.username)}? Собранная история сохранится.`);
+    const controls = node("div", "participant-confirmation-actions");
+    const request = node("a", "request-link", "Подтвердить на GitHub");
+    request.href = rosterRequestURL("remove", player.username);
+    request.target = "_blank";
+    request.rel = "noopener";
+    const cancel = node("button", "quiet-button", "Отмена");
+    cancel.type = "button";
+    cancel.addEventListener("click", () => {
+      confirmation.hidden = true;
+      remove.setAttribute("aria-expanded", "false");
+      remove.focus();
+    });
+    remove.addEventListener("click", () => {
+      confirmation.hidden = !confirmation.hidden;
+      remove.setAttribute("aria-expanded", String(!confirmation.hidden));
+      if (!confirmation.hidden) request.focus();
+    });
+    request.addEventListener("click", () => {
+      $("announcement").textContent = "Откроется готовая заявка. Чтобы изменить список, отправь её на GitHub.";
+    });
+    controls.append(request, cancel);
+    confirmation.append(text, controls);
+    main.append(name, remove);
+    item.append(main, confirmation);
+    list.append(item);
+  }
+  if (!state.data.players.length) list.append(node("li", "participants-loading", "В списке пока никого нет. Добавь первого участника."));
+}
+
+function toggleParticipants(open) {
+  const panel = $("participants");
+  const isOpen = open ?? panel.hidden;
+  panel.hidden = !isOpen;
+  $("manage-participants").setAttribute("aria-expanded", String(isOpen));
+  if (isOpen) $("participant-nickname").focus();
+  else $("manage-participants").focus();
 }
 
 function initials(username) {
@@ -368,12 +454,16 @@ async function load() {
     state.player = data.players.find((player) => player.username === wantedPlayer)?.username || data.players[0]?.username || "";
     $("updated-at").textContent = `Последний снимок: ${displayTime(data.latest_at)} МСК`;
     makeFilters();
+    renderParticipants();
     render();
   } catch (error) {
     $("load-error").hidden = false;
     $("load-error-detail").textContent = "Проверь соединение и попробуй ещё раз. Если сайт только что опубликован, данные могут появиться через несколько минут.";
     $("updated-at").textContent = "Данные пока недоступны";
     $("announcement").textContent = "Не удалось загрузить статистику.";
+    if (!state.data) {
+      $("participants-list").replaceChildren(node("li", "participants-loading", "Не удалось загрузить список. Попробуй обновить статистику."));
+    }
     console.error("Could not load GymScape dashboard:", error);
   } finally {
     $("dashboard").setAttribute("aria-busy", "false");
@@ -389,4 +479,28 @@ $("player-search").addEventListener("input", (event) => {
   if (state.data) renderRanking(rankRows());
 });
 $("retry-load").addEventListener("click", load);
+$("manage-participants").addEventListener("click", () => toggleParticipants());
+$("close-participants").addEventListener("click", () => toggleParticipants(false));
+$("participant-nickname").addEventListener("input", () => {
+  setParticipantFeedback("");
+  $("participant-add-request").hidden = true;
+  $("participant-add-request").removeAttribute("href");
+});
+$("participant-add-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const result = validateNewParticipant($("participant-nickname").value);
+  const request = $("participant-add-request");
+  if (result.error) {
+    request.hidden = true;
+    request.removeAttribute("href");
+    setParticipantFeedback(result.error, true);
+    $("participant-nickname").focus();
+    return;
+  }
+  $("participant-nickname").value = result.username;
+  request.href = rosterRequestURL("add", result.username);
+  request.hidden = false;
+  setParticipantFeedback("Заявка подготовлена. Отправь её на GitHub, чтобы добавить участника. Если новая вкладка не открылась, нажми на ссылку ниже.");
+  request.click();
+});
 load();
