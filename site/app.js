@@ -12,7 +12,8 @@ const dateOnly = new Intl.DateTimeFormat("ru-RU", {
 const ignoredExercises = new Set(["tutorial", "wilderness"]);
 const rosterIssueURL = "https://github.com/seregqa-m/gymscape-clan/issues/new";
 const nicknamePattern = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,63}$/;
-const state = { data: null, live: null, periods: [], period: "total", exercise: "all", player: "seregqa", search: "", refreshing: false, chartFrom: "", chartTo: "", chartDate: "", chartDays: [] };
+const AUTO_REFRESH_INTERVAL_MS = 15 * 60 * 1000;
+const state = { data: null, live: null, periods: [], period: "total", exercise: "all", player: "seregqa", search: "", refreshing: false, loading: false, lastLoadAttemptAt: 0, chartFrom: "", chartTo: "", chartDate: "", chartDays: [] };
 
 function node(tag, className, content) {
   const element = document.createElement(tag);
@@ -600,7 +601,9 @@ async function refreshLive() {
 }
 
 async function load() {
-  if (state.refreshing) return;
+  if (state.refreshing || state.loading) return;
+  state.loading = true;
+  state.lastLoadAttemptAt = Date.now();
   $("dashboard").setAttribute("aria-busy", "true");
   $("load-error").hidden = true;
   try {
@@ -633,6 +636,7 @@ async function load() {
     }
     console.error("Could not load GymScape dashboard:", error);
   } finally {
+    state.loading = false;
     $("dashboard").setAttribute("aria-busy", "false");
   }
 }
@@ -656,13 +660,21 @@ $("chart-day").addEventListener("input", (event) => inspectDay(Number(event.targ
 let resizeTimer;
 window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (state.data) renderChart(); }, 150); });
 let calendarDay = GymMetrics.moscowDate(new Date());
-setInterval(() => {
+function refreshIfDue() {
+  if (document.hidden || state.refreshing || state.loading) return;
   const today = GymMetrics.moscowDate(new Date());
-  if (today !== calendarDay && !document.hidden && !state.refreshing) {
-    calendarDay = today; state.live = null; state.chartTo = today;
-    load();
+  if (today !== calendarDay) {
+    calendarDay = today;
+    state.live = null;
+    state.chartTo = today;
+    void load();
+  } else if (Date.now() - state.lastLoadAttemptAt >= AUTO_REFRESH_INTERVAL_MS) {
+    void load();
   }
-}, 60000);
+}
+setInterval(refreshIfDue, 60000);
+document.addEventListener("visibilitychange", refreshIfDue);
+window.addEventListener("focus", refreshIfDue);
 $("manage-participants").addEventListener("click", () => toggleParticipants());
 $("close-participants").addEventListener("click", () => toggleParticipants(false));
 $("participant-nickname").addEventListener("input", () => {
