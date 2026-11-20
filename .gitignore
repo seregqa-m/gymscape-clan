@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.pyc
+data/
+research/
+!site/data/
+!site/data/dashboard.json
+*.sqlite3
+.env*
+node_modules/
+*.apk
+*.xapk

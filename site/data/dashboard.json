@@ -1,0 +1,910 @@
+{
+  "schema_version": 1,
+  "timezone": "Europe/Moscow",
+  "schedule": "00:00 МСК",
+  "generated_at": "2026-11-20T09:59:57.341199+00:00",
+  "baseline_at": "2026-11-20T09:59:57.341199+00:00",
+  "latest_at": "2026-11-20T09:59:57.341199+00:00",
+  "exercises": [
+    {
+      "id": "jumpingJacks",
+      "label": "Джампинг-джек",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "highKnees",
+      "label": "Колени вверх",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "jumpRope",
+      "label": "Скакалка",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "squats",
+      "label": "Приседания",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "pushUps",
+      "label": "Отжимания",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "kneePushUps",
+      "label": "Отжимания с колен",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "pushUpsClose",
+      "label": "Отжимания (камера на полу)",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "sitUps",
+      "label": "Подъёмы корпуса",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "legLifts",
+      "label": "Подъёмы ног",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "highPlank",
+      "label": "Высокая планка",
+      "unit": "seconds",
+      "include_in_rep_total": false
+    },
+    {
+      "id": "lunges",
+      "label": "Выпады",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "bicepCurls",
+      "label": "Сгибания на бицепс",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "shoulderPress",
+      "label": "Жим над головой",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "lateralRaises",
+      "label": "Разведения рук в стороны",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "uprightRows",
+      "label": "Тяга к подбородку",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "gobletSquats",
+      "label": "Гоблет-приседания",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "weightedSquats",
+      "label": "Приседания с весом",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "weightedLunges",
+      "label": "Выпады с весом",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labLegRaises",
+      "label": "Подъёмы ног (тест)",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labForearmPlank",
+      "label": "Планка на предплечьях",
+      "unit": "seconds",
+      "include_in_rep_total": false
+    },
+    {
+      "id": "labDiamondPushUps",
+      "label": "Алмазные отжимания",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labKneePushUps",
+      "label": "Отжимания с колен (тест)",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labPikePushUps",
+      "label": "Отжимания уголком",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labShoulderTaps",
+      "label": "Касания плеч в планке",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labUpDowns",
+      "label": "Подъёмы и опускания в планке",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labGluteBridges",
+      "label": "Ягодичный мост",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labJumpSquats",
+      "label": "Приседания с выпрыгиванием",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labKneeRaises",
+      "label": "Подъёмы коленей",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labShadowBoxing",
+      "label": "Бой с тенью",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labJogInPlace",
+      "label": "Бег на месте",
+      "unit": "reps",
+      "include_in_rep_total": true
+    },
+    {
+      "id": "labArmPulses",
+      "label": "Пульсации руками",
+      "unit": "seconds",
+      "include_in_rep_total": false
+    },
+    {
+      "id": "labWallSit",
+      "label": "Стульчик у стены",
+      "unit": "seconds",
+      "include_in_rep_total": false
+    },
+    {
+      "id": "imbueStand",
+      "label": "Зачарование: стоя",
+      "unit": "seconds",
+      "include_in_rep_total": false
+    },
+    {
+      "id": "imbueFloor",
+      "label": "Зачарование: на полу",
+      "unit": "seconds",
+      "include_in_rep_total": false
+    }
+  ],
+  "players": [
+    {
+      "username": "seregqa",
+      "canonical_username": "seregqa",
+      "status": "ok",
+      "profile": {
+        "username": "seregqa",
+        "total_level": 437,
+        "combat_level": 44,
+        "coins": 8868,
+        "skills_xp": {
+          "magic": 10992,
+          "melee": 56135,
+          "mining": 147830,
+          "ranged": 81970,
+          "slayer": 40017,
+          "defense": 46518,
+          "imbuing": 3894,
+          "crafting": 94655,
+          "smithing": 179650,
+          "fletching": 100950,
+          "hitpoints": 68296,
+          "woodcutting": 99595
+        }
+      }
+    },
+    {
+      "username": "Alexdander",
+      "canonical_username": "Alexdander",
+      "status": "ok",
+      "profile": {
+        "username": "Alexdander",
+        "total_level": 411,
+        "combat_level": 40,
+        "coins": 1985,
+        "skills_xp": {
+          "magic": 36362,
+          "melee": 44050,
+          "mining": 78550,
+          "ranged": 49070,
+          "slayer": 33205,
+          "defense": 48644,
+          "imbuing": 7907,
+          "crafting": 33995,
+          "smithing": 117205,
+          "fletching": 100025,
+          "hitpoints": 62396,
+          "woodcutting": 37475
+        }
+      }
+    },
+    {
+      "username": "ARRRTTT",
+      "canonical_username": "ARRRTTT",
+      "status": "ok",
+      "profile": {
+        "username": "ARRRTTT",
+        "total_level": 366,
+        "combat_level": 44,
+        "coins": 11900,
+        "skills_xp": {
+          "magic": 1100,
+          "melee": 74391,
+          "mining": 171120,
+          "ranged": 17547,
+          "slayer": 32514,
+          "defense": 74436,
+          "imbuing": 100,
+          "crafting": 30670,
+          "smithing": 104335,
+          "fletching": 29815,
+          "hitpoints": 58773,
+          "woodcutting": 49090
+        }
+      }
+    },
+    {
+      "username": "Mishqa",
+      "canonical_username": "Mishqa",
+      "status": "ok",
+      "profile": {
+        "username": "Mishqa",
+        "total_level": 387,
+        "combat_level": 40,
+        "coins": 11244,
+        "skills_xp": {
+          "magic": 360,
+          "melee": 62449,
+          "mining": 318280,
+          "ranged": 31962,
+          "slayer": 17167,
+          "defense": 29528,
+          "imbuing": 622,
+          "crafting": 77605,
+          "smithing": 165945,
+          "fletching": 79715,
+          "hitpoints": 44227,
+          "woodcutting": 90310
+        }
+      }
+    },
+    {
+      "username": "Sasaii",
+      "canonical_username": "Sasaii",
+      "status": "ok",
+      "profile": {
+        "username": "Sasaii",
+        "total_level": 303,
+        "combat_level": 30,
+        "coins": 2070,
+        "skills_xp": {
+          "magic": 3870,
+          "melee": 15218,
+          "mining": 58925,
+          "ranged": 21088,
+          "slayer": 8538,
+          "defense": 25538,
+          "imbuing": 3448,
+          "crafting": 10625,
+          "smithing": 53050,
+          "fletching": 36515,
+          "hitpoints": 24449,
+          "woodcutting": 27120
+        }
+      }
+    },
+    {
+      "username": "elejke",
+      "canonical_username": "elejke",
+      "status": "ok",
+      "profile": {
+        "username": "elejke",
+        "total_level": 342,
+        "combat_level": 36,
+        "coins": 4881,
+        "skills_xp": {
+          "magic": 512,
+          "melee": 40078,
+          "mining": 203045,
+          "ranged": 1428,
+          "slayer": 12406,
+          "defense": 36222,
+          "imbuing": 1197,
+          "crafting": 87215,
+          "smithing": 89580,
+          "fletching": 23130,
+          "hitpoints": 28663,
+          "woodcutting": 167190
+        }
+      }
+    },
+    {
+      "username": "Relca",
+      "canonical_username": "Relca",
+      "status": "ok",
+      "profile": {
+        "username": "Relca",
+        "total_level": 317,
+        "combat_level": 30,
+        "coins": 1135,
+        "skills_xp": {
+          "magic": 0,
+          "melee": 17765,
+          "mining": 200145,
+          "ranged": 9632,
+          "slayer": 6841,
+          "defense": 26689,
+          "imbuing": 4297,
+          "crafting": 47150,
+          "smithing": 57960,
+          "fletching": 20475,
+          "hitpoints": 20651,
+          "woodcutting": 73540
+        }
+      }
+    },
+    {
+      "username": "D1VAn",
+      "canonical_username": "D1VAn",
+      "status": "ok",
+      "profile": {
+        "username": "D1VAn",
+        "total_level": 288,
+        "combat_level": 30,
+        "coins": 3886,
+        "skills_xp": {
+          "magic": 0,
+          "melee": 29170,
+          "mining": 199380,
+          "ranged": 17238,
+          "slayer": 1744,
+          "defense": 9128,
+          "imbuing": 0,
+          "crafting": 23445,
+          "smithing": 69535,
+          "fletching": 32705,
+          "hitpoints": 20867,
+          "woodcutting": 35335
+        }
+      }
+    },
+    {
+      "username": "onepunch",
+      "canonical_username": "onepunch",
+      "status": "missing",
+      "profile": null
+    },
+    {
+      "username": "HawkHunter9892",
+      "canonical_username": "HawkHunter9892",
+      "status": "missing",
+      "profile": null
+    },
+    {
+      "username": "keanuwind",
+      "canonical_username": "keanuwind",
+      "status": "ok",
+      "profile": {
+        "username": "keanuwind",
+        "total_level": 183,
+        "combat_level": 9,
+        "coins": 8,
+        "skills_xp": {
+          "magic": 0,
+          "melee": 1692,
+          "mining": 68900,
+          "ranged": 0,
+          "slayer": 0,
+          "defense": 608,
+          "imbuing": 0,
+          "crafting": 4805,
+          "smithing": 9820,
+          "fletching": 43310,
+          "hitpoints": 2901,
+          "woodcutting": 191180
+        }
+      }
+    },
+    {
+      "username": "millennial falcon",
+      "canonical_username": "millennial falcon",
+      "status": "ok",
+      "profile": {
+        "username": "millennial falcon",
+        "total_level": 109,
+        "combat_level": 9,
+        "coins": 12,
+        "skills_xp": {
+          "magic": 0,
+          "melee": 1154,
+          "mining": 13495,
+          "ranged": 43,
+          "slayer": 0,
+          "defense": 1219,
+          "imbuing": 413,
+          "crafting": 2415,
+          "smithing": 3780,
+          "fletching": 2330,
+          "hitpoints": 2915,
+          "woodcutting": 12115
+        }
+      }
+    },
+    {
+      "username": "dimqa",
+      "canonical_username": "dimqa",
+      "status": "ok",
+      "profile": {
+        "username": "dimqa",
+        "total_level": 21,
+        "combat_level": 3,
+        "coins": 0,
+        "skills_xp": {
+          "magic": 0,
+          "melee": 80,
+          "mining": 0,
+          "ranged": 0,
+          "slayer": 0,
+          "defense": 0,
+          "imbuing": 0,
+          "crafting": 0,
+          "smithing": 0,
+          "fletching": 0,
+          "hitpoints": 2094,
+          "woodcutting": 0
+        }
+      }
+    }
+  ],
+  "periods": [
+    {
+      "id": "baseline",
+      "label": "Стартовый тотал",
+      "available": true,
+      "from": null,
+      "to": "2026-11-20T09:59:57.341199+00:00",
+      "partial": false,
+      "description": "Первый снимок рейтинга. Не входит в дневной прогресс.",
+      "rows": [
+        {
+          "username": "seregqa",
+          "status": "ok",
+          "values": {
+            "highKnees": 14,
+            "highPlank": 385,
+            "jumpingJacks": 2276,
+            "labShadowBoxing": 186,
+            "legLifts": 2242,
+            "lunges": 1452,
+            "pushUps": 2250,
+            "sitUps": 255,
+            "squats": 2679,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "Alexdander",
+          "status": "ok",
+          "values": {
+            "highKnees": 54,
+            "highPlank": 51,
+            "jumpingJacks": 2606,
+            "legLifts": 588,
+            "lunges": 1631,
+            "pushUps": 2323,
+            "sitUps": 764,
+            "squats": 2755,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "ARRRTTT",
+          "status": "ok",
+          "values": {
+            "highPlank": 363,
+            "jumpingJacks": 1912,
+            "labShadowBoxing": 178,
+            "legLifts": 59,
+            "lunges": 1361,
+            "pushUps": 2440,
+            "sitUps": 1326,
+            "squats": 1799,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "Mishqa",
+          "status": "ok",
+          "values": {
+            "highPlank": 853,
+            "jumpingJacks": 1677,
+            "labShadowBoxing": 83,
+            "legLifts": 14,
+            "lunges": 1278,
+            "pushUps": 1448,
+            "sitUps": 958,
+            "squats": 2112,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "Sasaii",
+          "status": "ok",
+          "values": {
+            "highKnees": 91,
+            "highPlank": 477,
+            "jumpingJacks": 670,
+            "kneePushUps": 69,
+            "labShadowBoxing": 93,
+            "legLifts": 114,
+            "lunges": 483,
+            "pushUps": 735,
+            "sitUps": 1009,
+            "squats": 1628,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "elejke",
+          "status": "ok",
+          "values": {
+            "highKnees": 45,
+            "highPlank": 173,
+            "jumpingJacks": 441,
+            "lunges": 618,
+            "pushUps": 1039,
+            "sitUps": 837,
+            "squats": 1393
+          },
+          "anomalies": []
+        },
+        {
+          "username": "Relca",
+          "status": "ok",
+          "values": {
+            "highKnees": 93,
+            "highPlank": 1414,
+            "jumpingJacks": 897,
+            "kneePushUps": 29,
+            "legLifts": 284,
+            "lunges": 620,
+            "pushUps": 517,
+            "sitUps": 335,
+            "squats": 1752,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "D1VAn",
+          "status": "ok",
+          "values": {
+            "highPlank": 84,
+            "jumpingJacks": 313,
+            "kneePushUps": 77,
+            "legLifts": 579,
+            "lunges": 81,
+            "pushUps": 850,
+            "sitUps": 636,
+            "squats": 819
+          },
+          "anomalies": []
+        },
+        {
+          "username": "onepunch",
+          "status": "missing",
+          "values": {},
+          "anomalies": []
+        },
+        {
+          "username": "HawkHunter9892",
+          "status": "missing",
+          "values": {},
+          "anomalies": []
+        },
+        {
+          "username": "keanuwind",
+          "status": "ok",
+          "values": {
+            "jumpingJacks": 34,
+            "legLifts": 5,
+            "pushUps": 15,
+            "sitUps": 24,
+            "squats": 188,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "millennial falcon",
+          "status": "ok",
+          "values": {
+            "highPlank": 22,
+            "jumpingJacks": 76,
+            "lunges": 24,
+            "pushUps": 20,
+            "sitUps": 61,
+            "squats": 111,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "dimqa",
+          "status": "ok",
+          "values": {
+            "tutorial": 1
+          },
+          "anomalies": []
+        }
+      ]
+    },
+    {
+      "id": "total",
+      "label": "Текущий тотал",
+      "available": true,
+      "from": null,
+      "to": "2026-11-20T09:59:57.341199+00:00",
+      "partial": false,
+      "description": "Счётчики публичного рейтинга на момент последнего снимка.",
+      "rows": [
+        {
+          "username": "seregqa",
+          "status": "ok",
+          "values": {
+            "highKnees": 14,
+            "highPlank": 385,
+            "jumpingJacks": 2276,
+            "labShadowBoxing": 186,
+            "legLifts": 2242,
+            "lunges": 1452,
+            "pushUps": 2250,
+            "sitUps": 255,
+            "squats": 2679,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "Alexdander",
+          "status": "ok",
+          "values": {
+            "highKnees": 54,
+            "highPlank": 51,
+            "jumpingJacks": 2606,
+            "legLifts": 588,
+            "lunges": 1631,
+            "pushUps": 2323,
+            "sitUps": 764,
+            "squats": 2755,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "ARRRTTT",
+          "status": "ok",
+          "values": {
+            "highPlank": 363,
+            "jumpingJacks": 1912,
+            "labShadowBoxing": 178,
+            "legLifts": 59,
+            "lunges": 1361,
+            "pushUps": 2440,
+            "sitUps": 1326,
+            "squats": 1799,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "Mishqa",
+          "status": "ok",
+          "values": {
+            "highPlank": 853,
+            "jumpingJacks": 1677,
+            "labShadowBoxing": 83,
+            "legLifts": 14,
+            "lunges": 1278,
+            "pushUps": 1448,
+            "sitUps": 958,
+            "squats": 2112,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "Sasaii",
+          "status": "ok",
+          "values": {
+            "highKnees": 91,
+            "highPlank": 477,
+            "jumpingJacks": 670,
+            "kneePushUps": 69,
+            "labShadowBoxing": 93,
+            "legLifts": 114,
+            "lunges": 483,
+            "pushUps": 735,
+            "sitUps": 1009,
+            "squats": 1628,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "elejke",
+          "status": "ok",
+          "values": {
+            "highKnees": 45,
+            "highPlank": 173,
+            "jumpingJacks": 441,
+            "lunges": 618,
+            "pushUps": 1039,
+            "sitUps": 837,
+            "squats": 1393
+          },
+          "anomalies": []
+        },
+        {
+          "username": "Relca",
+          "status": "ok",
+          "values": {
+            "highKnees": 93,
+            "highPlank": 1414,
+            "jumpingJacks": 897,
+            "kneePushUps": 29,
+            "legLifts": 284,
+            "lunges": 620,
+            "pushUps": 517,
+            "sitUps": 335,
+            "squats": 1752,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "D1VAn",
+          "status": "ok",
+          "values": {
+            "highPlank": 84,
+            "jumpingJacks": 313,
+            "kneePushUps": 77,
+            "legLifts": 579,
+            "lunges": 81,
+            "pushUps": 850,
+            "sitUps": 636,
+            "squats": 819
+          },
+          "anomalies": []
+        },
+        {
+          "username": "onepunch",
+          "status": "missing",
+          "values": {},
+          "anomalies": []
+        },
+        {
+          "username": "HawkHunter9892",
+          "status": "missing",
+          "values": {},
+          "anomalies": []
+        },
+        {
+          "username": "keanuwind",
+          "status": "ok",
+          "values": {
+            "jumpingJacks": 34,
+            "legLifts": 5,
+            "pushUps": 15,
+            "sitUps": 24,
+            "squats": 188,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "millennial falcon",
+          "status": "ok",
+          "values": {
+            "highPlank": 22,
+            "jumpingJacks": 76,
+            "lunges": 24,
+            "pushUps": 20,
+            "sitUps": 61,
+            "squats": 111,
+            "tutorial": 2
+          },
+          "anomalies": []
+        },
+        {
+          "username": "dimqa",
+          "status": "ok",
+          "values": {
+            "tutorial": 1
+          },
+          "anomalies": []
+        }
+      ]
+    },
+    {
+      "id": "day",
+      "label": "Последний интервал",
+      "available": false,
+      "from": null,
+      "to": "2026-11-20T09:59:57.341199+00:00",
+      "partial": true,
+      "description": "Разница появится после следующего снимка в 00:00 МСК.",
+      "rows": []
+    },
+    {
+      "id": "week",
+      "label": "7 дней",
+      "available": false,
+      "from": null,
+      "to": "2026-11-20T09:59:57.341199+00:00",
+      "partial": true,
+      "description": "Разница появится после следующего снимка в 00:00 МСК.",
+      "rows": []
+    },
+    {
+      "id": "month",
+      "label": "30 дней",
+      "available": false,
+      "from": null,
+      "to": "2026-11-20T09:59:57.341199+00:00",
+      "partial": true,
+      "description": "Разница появится после следующего снимка в 00:00 МСК.",
+      "rows": []
+    }
+  ],
+  "history": []
+}

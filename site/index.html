@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111511">
+  <meta name="description" content="Личный зачёт нашего клана GymScape. Повторения, упражнения и ежедневный прогресс.">
+  <title>GymScape · Клановый зачёт</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#leaderboard">К рейтингу</a>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="GymScape, главная">
+        <svg class="brand-mark" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 9h5v14H5zM22 9h5v14h-5zM1 12h3v8H1zM28 12h3v8h-3zM11 14h10v4H11z" fill="currentColor"/></svg>
+        <span>GYMSCAPE<span class="brand-divider">/</span><span class="brand-clan">CLAN</span></span>
+      </a>
+      <div class="schedule-label"><span class="status-dot"></span>Снимок каждый день в 00:00 МСК</div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <div class="intro-copy">
+          <p class="eyebrow">Каждое повторение в зачёт</p>
+          <h1 id="page-title">Вместе сильнее.<br><span>Но кто сегодня первый?</span></h1>
+          <p class="intro-text">Наш клан, реальные упражнения и немного здоровой конкуренции.</p>
+        </div>
+        <div class="intro-aside">
+          <div class="big-symbol" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+          <p id="updated-at" class="updated-at">Загружаем статистику…</p>
+        </div>
+      </section>
+
+      <div id="load-error" class="error-state" role="alert" hidden>
+        <div><strong>Не удалось загрузить статистику</strong><p id="load-error-detail">Проверь соединение и попробуй ещё раз.</p></div>
+        <button id="retry-load" class="secondary-button" type="button">Попробовать ещё раз</button>
+      </div>
+
+      <div id="dashboard" aria-busy="true">
+        <section class="summary-grid" aria-label="Сводка выбранного периода">
+          <div class="summary-cell primary-summary"><span id="summary-value-label" class="metric-label">Повторений в зачёте</span><strong id="summary-value">—</strong><span id="summary-period" class="metric-caption">Загружаем данные</span></div>
+          <div class="summary-cell"><span class="metric-label">Участников</span><strong id="summary-players">—</strong><span id="summary-players-note" class="metric-caption">В нашем списке</span></div>
+          <div class="summary-cell"><span class="metric-label">Лидер периода</span><strong id="summary-leader" class="leader-metric">—</strong><span id="summary-leader-note" class="metric-caption">Выбирай упражнение и сравнивай</span></div>
+        </section>
+
+        <section class="workspace" aria-label="Клановая статистика">
+          <div class="filters">
+            <div class="period-filter">
+              <span class="filter-label" id="period-label">Период</span>
+              <div class="period-options" id="period-options" role="group" aria-labelledby="period-label"></div>
+            </div>
+            <div class="exercise-filter">
+              <label class="filter-label" for="exercise-filter">Упражнение</label>
+              <div class="select-wrap"><select id="exercise-filter"><option value="all">Все повторения</option></select></div>
+            </div>
+          </div>
+
+          <p id="period-note" class="period-note"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor"/><path d="M8 7v4M8 4.5v.5" stroke="currentColor" stroke-width="1.5"/></svg><span>Первый снимок — отдельный стартовый тотал. Дневные результаты начнутся со следующего снимка.</span></p>
+
+          <div class="content-grid">
+            <section class="ranking-panel" id="leaderboard" aria-labelledby="ranking-title">
+              <div class="panel-heading">
+                <div><p class="section-kicker">Клановый зачёт</p><h2 id="ranking-title">Таблица лидеров</h2></div>
+                <label class="search-wrap"><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="1.6"/></svg><span class="sr-only">Поиск игрока</span><input id="player-search" type="search" placeholder="Найти игрока" autocomplete="off"></label>
+              </div>
+              <div class="table-scroll">
+                <table class="ranking-table">
+                  <caption class="sr-only">Рейтинг игроков по выбранному упражнению и периоду. Нажми на имя, чтобы открыть подробности.</caption>
+                  <thead><tr><th scope="col" class="rank-heading">#</th><th scope="col">Игрок</th><th scope="col" id="value-heading" class="value-heading">Повторения</th></tr></thead>
+                  <tbody id="ranking-body"><tr><td colspan="3" class="table-message">Загружаем рейтинг…</td></tr></tbody>
+                </table>
+              </div>
+              <p id="ranking-footnote" class="panel-footnote">Планка считается в секундах и не входит в сумму повторений.</p>
+            </section>
+
+            <aside class="detail-panel" aria-labelledby="detail-title">
+              <div class="detail-heading"><div class="player-avatar detail-avatar" id="detail-avatar" aria-hidden="true">?</div><div><p class="section-kicker">Статистика игрока</p><h2 id="detail-title">Выбери игрока</h2></div><span id="detail-place" class="place-badge" hidden></span></div>
+              <div id="profile-stats" class="profile-stats" hidden></div>
+              <p id="detail-period" class="detail-period">Упражнения за выбранный период</p>
+              <dl id="exercise-details" class="exercise-details"></dl>
+              <div class="chart-heading"><h3>Динамика</h3><span id="chart-unit">Повторения</span></div>
+              <div id="history-chart" class="history-chart"><div class="chart-empty"><svg width="46" height="32" viewBox="0 0 46 32" aria-hidden="true"><path d="M4 28h38M10 24V16M23 24V5M36 24V11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><strong>История начинается здесь</strong><p>После следующего снимка появится первый прирост. Стартовый тотал останется отдельно.</p></div></div>
+            </aside>
+          </div>
+        </section>
+        <p class="calculation-note">Сравниваем счётчики между снимками. Время обновления может немного сдвигаться; фактический интервал указан рядом с результатами.</p>
+      </div>
+    </main>
+
+    <footer class="footer"><span>GYMSCAPE <span class="footer-dot">·</span> Наш клановый зачёт</span><span>Тренируемся в игре. Сравниваемся здесь.</span></footer>
+  </div>
+  <div class="sr-only" id="announcement" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

@@ -1,0 +1,206 @@
+[
+  {
+    "id": "jumpingJacks",
+    "label": "Джампинг-джек",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "highKnees",
+    "label": "Колени вверх",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "jumpRope",
+    "label": "Скакалка",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "squats",
+    "label": "Приседания",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "pushUps",
+    "label": "Отжимания",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "kneePushUps",
+    "label": "Отжимания с колен",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "pushUpsClose",
+    "label": "Отжимания (камера на полу)",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "sitUps",
+    "label": "Подъёмы корпуса",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "legLifts",
+    "label": "Подъёмы ног",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "highPlank",
+    "label": "Высокая планка",
+    "unit": "seconds",
+    "include_in_rep_total": false
+  },
+  {
+    "id": "lunges",
+    "label": "Выпады",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "bicepCurls",
+    "label": "Сгибания на бицепс",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "shoulderPress",
+    "label": "Жим над головой",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "lateralRaises",
+    "label": "Разведения рук в стороны",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "uprightRows",
+    "label": "Тяга к подбородку",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "gobletSquats",
+    "label": "Гоблет-приседания",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "weightedSquats",
+    "label": "Приседания с весом",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "weightedLunges",
+    "label": "Выпады с весом",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labLegRaises",
+    "label": "Подъёмы ног (тест)",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labForearmPlank",
+    "label": "Планка на предплечьях",
+    "unit": "seconds",
+    "include_in_rep_total": false
+  },
+  {
+    "id": "labDiamondPushUps",
+    "label": "Алмазные отжимания",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labKneePushUps",
+    "label": "Отжимания с колен (тест)",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labPikePushUps",
+    "label": "Отжимания уголком",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labShoulderTaps",
+    "label": "Касания плеч в планке",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labUpDowns",
+    "label": "Подъёмы и опускания в планке",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labGluteBridges",
+    "label": "Ягодичный мост",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labJumpSquats",
+    "label": "Приседания с выпрыгиванием",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labKneeRaises",
+    "label": "Подъёмы коленей",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labShadowBoxing",
+    "label": "Бой с тенью",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labJogInPlace",
+    "label": "Бег на месте",
+    "unit": "reps",
+    "include_in_rep_total": true
+  },
+  {
+    "id": "labArmPulses",
+    "label": "Пульсации руками",
+    "unit": "seconds",
+    "include_in_rep_total": false
+  },
+  {
+    "id": "labWallSit",
+    "label": "Стульчик у стены",
+    "unit": "seconds",
+    "include_in_rep_total": false
+  },
+  {
+    "id": "imbueStand",
+    "label": "Зачарование: стоя",
+    "unit": "seconds",
+    "include_in_rep_total": false
+  },
+  {
+    "id": "imbueFloor",
+    "label": "Зачарование: на полу",
+    "unit": "seconds",
+    "include_in_rep_total": false
+  }
+]
