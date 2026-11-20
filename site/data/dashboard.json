@@ -215,6 +215,7 @@
     {
       "username": "seregqa",
       "canonical_username": "seregqa",
+      "id": "8723d63b-f0db-4fe2-9871-dce66eea4d65",
       "status": "ok",
       "profile": {
         "username": "seregqa",
@@ -241,6 +242,7 @@
     {
       "username": "Alexdander",
       "canonical_username": "Alexdander",
+      "id": "1160b207-8005-413a-81cc-6fa314d54314",
       "status": "ok",
       "profile": {
         "username": "Alexdander",
@@ -267,6 +269,7 @@
     {
       "username": "ARRRTTT",
       "canonical_username": "ARRRTTT",
+      "id": "5e224644-7ced-44d2-bb67-cf345b038097",
       "status": "ok",
       "profile": {
         "username": "ARRRTTT",
@@ -293,6 +296,7 @@
     {
       "username": "Mishqa",
       "canonical_username": "Mishqa",
+      "id": "36091cd7-310f-43f6-b90a-d1c7de7ec603",
       "status": "ok",
       "profile": {
         "username": "Mishqa",
@@ -319,6 +323,7 @@
     {
       "username": "Sasaii",
       "canonical_username": "Sasaii",
+      "id": "b0c5c63e-046d-4a7c-b4b0-d93dde4440d0",
       "status": "ok",
       "profile": {
         "username": "Sasaii",
@@ -345,6 +350,7 @@
     {
       "username": "elejke",
       "canonical_username": "elejke",
+      "id": "a83644b3-881d-4416-a6bb-9470e39a2d3a",
       "status": "ok",
       "profile": {
         "username": "elejke",
@@ -371,6 +377,7 @@
     {
       "username": "Relca",
       "canonical_username": "Relca",
+      "id": "4a686c32-0b5b-4ae0-9d62-6989889e641f",
       "status": "ok",
       "profile": {
         "username": "Relca",
@@ -397,6 +404,7 @@
     {
       "username": "D1VAn",
       "canonical_username": "D1VAn",
+      "id": "5a985d52-ea39-4627-ab25-f31560212ab5",
       "status": "ok",
       "profile": {
         "username": "D1VAn",
@@ -423,6 +431,7 @@
     {
       "username": "onepunch",
       "canonical_username": "onepunch",
+      "id": null,
       "status": "missing",
       "profile": null,
       "captured_at": "2026-11-20T09:59:56.035261+00:00"
@@ -430,6 +439,7 @@
     {
       "username": "HawkHunter9892",
       "canonical_username": "HawkHunter9892",
+      "id": null,
       "status": "missing",
       "profile": null,
       "captured_at": "2026-11-20T09:59:56.680431+00:00"
@@ -437,6 +447,7 @@
     {
       "username": "keanuwind",
       "canonical_username": "keanuwind",
+      "id": "8d2e2893-508f-4a50-bdf4-21a482123ec1",
       "status": "ok",
       "profile": {
         "username": "keanuwind",
@@ -463,6 +474,7 @@
     {
       "username": "millennial falcon",
       "canonical_username": "millennial falcon",
+      "id": "9634f556-24b9-4d5e-b1a3-733c7b23f792",
       "status": "ok",
       "profile": {
         "username": "millennial falcon",
@@ -489,6 +501,7 @@
     {
       "username": "dimqa",
       "canonical_username": "dimqa",
+      "id": "65a64c63-f9a1-4f41-994c-788ac1b40c87",
       "status": "ok",
       "profile": {
         "username": "dimqa",
@@ -997,5 +1010,226 @@
       "rows": []
     }
   ],
-  "history": []
+  "history": [],
+  "source": {
+    "base_url": "https://hjhuirpegaghxvaycgrt.supabase.co",
+    "publishable_key": "sb_publishable_0IOoCCJ-22YLst8KZE8YwQ_eJZP5lZJ"
+  },
+  "day_references": [
+    {
+      "username": "seregqa",
+      "status": "ok",
+      "values": {
+        "highKnees": 14,
+        "highPlank": 385,
+        "jumpingJacks": 2276,
+        "labShadowBoxing": 186,
+        "legLifts": 2242,
+        "lunges": 1452,
+        "pushUps": 2250,
+        "sitUps": 255,
+        "squats": 2679,
+        "tutorial": 2
+      },
+      "captured_at": "2026-11-20T09:59:54.662926+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": "8723d63b-f0db-4fe2-9871-dce66eea4d65"
+    },
+    {
+      "username": "Alexdander",
+      "status": "ok",
+      "values": {
+        "highKnees": 54,
+        "highPlank": 51,
+        "jumpingJacks": 2606,
+        "legLifts": 588,
+        "lunges": 1631,
+        "pushUps": 2323,
+        "sitUps": 764,
+        "squats": 2755,
+        "tutorial": 2
+      },
+      "captured_at": "2026-11-20T09:59:54.676866+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": "1160b207-8005-413a-81cc-6fa314d54314"
+    },
+    {
+      "username": "ARRRTTT",
+      "status": "ok",
+      "values": {
+        "highPlank": 363,
+        "jumpingJacks": 1912,
+        "labShadowBoxing": 178,
+        "legLifts": 59,
+        "lunges": 1361,
+        "pushUps": 2440,
+        "sitUps": 1326,
+        "squats": 1799,
+        "tutorial": 2
+      },
+      "captured_at": "2026-11-20T09:59:54.670610+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": "5e224644-7ced-44d2-bb67-cf345b038097"
+    },
+    {
+      "username": "Mishqa",
+      "status": "ok",
+      "values": {
+        "highPlank": 853,
+        "jumpingJacks": 1677,
+        "labShadowBoxing": 83,
+        "legLifts": 14,
+        "lunges": 1278,
+        "pushUps": 1448,
+        "sitUps": 958,
+        "squats": 2112,
+        "tutorial": 2
+      },
+      "captured_at": "2026-11-20T09:59:55.370827+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": "36091cd7-310f-43f6-b90a-d1c7de7ec603"
+    },
+    {
+      "username": "Sasaii",
+      "status": "ok",
+      "values": {
+        "highKnees": 91,
+        "highPlank": 477,
+        "jumpingJacks": 670,
+        "kneePushUps": 69,
+        "labShadowBoxing": 93,
+        "legLifts": 114,
+        "lunges": 483,
+        "pushUps": 735,
+        "sitUps": 1009,
+        "squats": 1628,
+        "tutorial": 2
+      },
+      "captured_at": "2026-11-20T09:59:55.352839+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": "b0c5c63e-046d-4a7c-b4b0-d93dde4440d0"
+    },
+    {
+      "username": "elejke",
+      "status": "ok",
+      "values": {
+        "highKnees": 45,
+        "highPlank": 173,
+        "jumpingJacks": 441,
+        "lunges": 618,
+        "pushUps": 1039,
+        "sitUps": 837,
+        "squats": 1393
+      },
+      "captured_at": "2026-11-20T09:59:55.317316+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": "a83644b3-881d-4416-a6bb-9470e39a2d3a"
+    },
+    {
+      "username": "Relca",
+      "status": "ok",
+      "values": {
+        "highKnees": 93,
+        "highPlank": 1414,
+        "jumpingJacks": 897,
+        "kneePushUps": 29,
+        "legLifts": 284,
+        "lunges": 620,
+        "pushUps": 517,
+        "sitUps": 335,
+        "squats": 1752,
+        "tutorial": 2
+      },
+      "captured_at": "2026-11-20T09:59:56.016113+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": "4a686c32-0b5b-4ae0-9d62-6989889e641f"
+    },
+    {
+      "username": "D1VAn",
+      "status": "ok",
+      "values": {
+        "highPlank": 84,
+        "jumpingJacks": 313,
+        "kneePushUps": 77,
+        "legLifts": 579,
+        "lunges": 81,
+        "pushUps": 850,
+        "sitUps": 636,
+        "squats": 819
+      },
+      "captured_at": "2026-11-20T09:59:56.018750+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": "5a985d52-ea39-4627-ab25-f31560212ab5"
+    },
+    {
+      "username": "onepunch",
+      "status": "missing",
+      "values": {},
+      "captured_at": "2026-11-20T09:59:56.035261+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": null
+    },
+    {
+      "username": "HawkHunter9892",
+      "status": "missing",
+      "values": {},
+      "captured_at": "2026-11-20T09:59:56.680431+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": null
+    },
+    {
+      "username": "keanuwind",
+      "status": "ok",
+      "values": {
+        "jumpingJacks": 34,
+        "legLifts": 5,
+        "pushUps": 15,
+        "sitUps": 24,
+        "squats": 188,
+        "tutorial": 2
+      },
+      "captured_at": "2026-11-20T09:59:56.745885+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": "8d2e2893-508f-4a50-bdf4-21a482123ec1"
+    },
+    {
+      "username": "millennial falcon",
+      "status": "ok",
+      "values": {
+        "highPlank": 22,
+        "jumpingJacks": 76,
+        "lunges": 24,
+        "pushUps": 20,
+        "sitUps": 61,
+        "squats": 111,
+        "tutorial": 2
+      },
+      "captured_at": "2026-11-20T09:59:56.891247+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": "9634f556-24b9-4d5e-b1a3-733c7b23f792"
+    },
+    {
+      "username": "dimqa",
+      "status": "ok",
+      "values": {
+        "tutorial": 1
+      },
+      "captured_at": "2026-11-20T09:59:57.340690+00:00",
+      "kind": "baseline",
+      "boundary_date": null,
+      "profile_id": "65a64c63-f9a1-4f41-994c-788ac1b40c87"
+    }
+  ]
 }

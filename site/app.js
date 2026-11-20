@@ -1,4 +1,4 @@
-/* Static dashboard. All values come from the published snapshot, never live game APIs. */
+/* Static hosting: saved midnight history + public counters read in the browser. */
 "use strict";
 
 const $ = (id) => document.getElementById(id);
@@ -12,7 +12,7 @@ const dateOnly = new Intl.DateTimeFormat("ru-RU", {
 const ignoredExercises = new Set(["tutorial", "wilderness"]);
 const rosterIssueURL = "https://github.com/seregqa-m/gymscape-clan/issues/new";
 const nicknamePattern = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,63}$/;
-const state = { data: null, period: "baseline", exercise: "pushUps", player: "seregqa", search: "" };
+const state = { data: null, live: null, periods: [], period: "total", exercise: "all", player: "seregqa", search: "", refreshing: false, chartFrom: "", chartTo: "", chartDate: "", chartDays: [] };
 
 function node(tag, className, content) {
   const element = document.createElement(tag);
@@ -27,12 +27,12 @@ function displayTime(iso, short = false) {
 }
 
 function currentPeriod() {
-  return state.data.periods.find((period) => period.id === state.period) || state.data.periods[0];
+  return state.periods.find((period) => period.id === state.period) || state.periods[0];
 }
 
 function exercises() {
   const used = new Set(["pushUps"]);
-  for (const period of state.data.periods) {
+  for (const period of [...state.data.periods, ...state.periods, ...state.data.history]) {
     for (const row of period.rows) {
       for (const [id, value] of Object.entries(row.values || {})) {
         if (Number.isFinite(value) && value > 0) used.add(id);
@@ -53,7 +53,7 @@ function unit() {
 function valueFor(row, exerciseId = state.exercise) {
   if (!row || row.status !== "ok") return null;
   const ids = exerciseId === "all"
-    ? exercises().filter((exercise) => exercise.include_in_rep_total && exercise.unit === "reps").map((exercise) => exercise.id)
+    ? state.data.exercises.filter((exercise) => exercise.include_in_rep_total && exercise.unit === "reps").map((exercise) => exercise.id)
     : [exerciseId];
   let total = 0;
   for (const id of ids) {
@@ -76,8 +76,9 @@ function formatValue(value, valueUnit = unit()) {
 }
 
 function shownName(username) {
+  const livePlayer = state.live?.players.find((item) => item.username === username);
   const player = state.data.players.find((item) => item.username === username);
-  return player?.canonical_username || username;
+  return livePlayer?.canonical_username || player?.canonical_username || username;
 }
 
 function rosterRequestURL(action, username) {
@@ -190,7 +191,7 @@ function rankRows() {
 }
 
 function statusText(row) {
-  if (!currentPeriod().available) return "Ждём следующий снимок";
+  if (!currentPeriod().available) return "Нет данных за этот день";
   if (!row || row.status === "missing") return "Пока нет данных";
   if (row.status === "error") return "Не удалось получить данные";
   if (row.status === "no_baseline") return "Пока нет начального снимка";
@@ -201,7 +202,7 @@ function statusText(row) {
 function makeFilters() {
   const periodContainer = $("period-options");
   periodContainer.replaceChildren();
-  for (const period of state.data.periods) {
+  for (const period of state.periods) {
     const button = node("button", "", period.label);
     button.type = "button";
     button.dataset.period = period.id;
@@ -230,7 +231,7 @@ function renderSummary(ranked) {
   const first = valid[0];
   $("summary-value-label").textContent = unit() === "seconds" ? "Времени в зачёте, мин:сек" : "Повторений в зачёте";
   $("summary-value").textContent = formatValue(total);
-  $("summary-period").textContent = period.label + (period.partial ? " · неполный период" : "");
+  $("summary-period").textContent = period.label + (period.in_progress ? " · день продолжается" : period.partial ? " · неполный день" : "");
   $("summary-players").textContent = numeric.format(state.data.players.length);
   $("summary-players-note").textContent = valid.length === state.data.players.length
     ? "Все результаты получены"
@@ -239,11 +240,10 @@ function renderSummary(ranked) {
   const tied = first ? valid.filter((row) => row.value === first.value).length : 0;
   $("summary-leader-note").textContent = first && first.value > 0
     ? `${formatValue(first.value)} ${unit() === "seconds" ? "мин:сек" : "повт."}${tied > 1 ? ` · делит место с ${tied - 1}` : ""}`
-    : period.available ? "Первое место ещё впереди" : "Сначала нужен следующий снимок";
+    : period.available ? "Первое место ещё впереди" : "Нет данных за этот день";
   const description = period.description || "";
-  const baselineNote = period.id === "baseline" && !description.toLocaleLowerCase("ru-RU").includes("не входит в дневной прогресс") ? " Стартовый тотал не входит в дневной прогресс." : "";
   const range = period.from ? ` ${displayTime(period.from)} — ${displayTime(period.to)} МСК.` : "";
-  $("period-note").querySelector("span").textContent = description + baselineNote + range;
+  $("period-note").querySelector("span").textContent = description + range;
   $("value-heading").textContent = unit() === "seconds" ? "Мин:сек" : unit() === "reps" ? "Повторения" : "Значение";
   $("ranking-footnote").textContent = state.exercise === "all"
     ? "Сумма повторений разных упражнений. Упражнения на время, бег на месте и служебные упражнения не входят в зачёт."
@@ -320,8 +320,8 @@ function renderProfile(player) {
     ["Золото", player?.profile?.coins],
   ].filter(([, value]) => Number.isFinite(value));
   target.hidden = !stats.length;
-  target.setAttribute("aria-label", "Игровой профиль на последнем снимке");
-  if (stats.length) target.append(node("p", "profile-caption", "Профиль на последнем снимке"));
+  target.setAttribute("aria-label", "Последние данные игрового профиля");
+  if (stats.length) target.append(node("p", "profile-caption", "Последние данные профиля"));
   for (const [label, value] of stats) {
     const item = node("div", "profile-stat");
     item.append(node("span", "", label), node("strong", "", numeric.format(value)));
@@ -332,14 +332,24 @@ function renderProfile(player) {
 function renderDetail(ranked) {
   const period = currentPeriod();
   const current = ranked.find((row) => row.username === state.player) || ranked[0];
-  if (!current) return;
+  if (!current) {
+    state.player = "";
+    $("detail-title").textContent = "Пока нет участников";
+    $("detail-avatar").textContent = "?";
+    $("detail-place").hidden = true;
+    $("detail-period").textContent = "Добавь участников, чтобы сравнивать результаты.";
+    $("exercise-details").replaceChildren();
+    $("detail-starting-total").textContent = "";
+    renderProfile(null);
+    return;
+  }
   state.player = current.username;
-  const player = state.data.players.find((row) => row.username === current.username);
+  const player = state.live?.players.find((row) => row.username === current.username) || state.data.players.find((row) => row.username === current.username);
   $("detail-title").textContent = shownName(current.username);
   $("detail-avatar").textContent = initials(shownName(current.username));
   $("detail-place").hidden = current.rank === null;
   $("detail-place").textContent = current.rank === null ? "" : `#${current.rank}`;
-  $("detail-period").textContent = `${period.label}${period.partial ? " · неполный период" : ""}`;
+  $("detail-period").textContent = `${period.label}${period.in_progress ? " · день продолжается" : period.partial ? " · неполный день" : ""}`;
   renderProfile(player);
   const details = $("exercise-details");
   details.replaceChildren();
@@ -349,7 +359,9 @@ function renderDetail(ranked) {
     pair.append(node("dt", "", exercise.label), node("dd", "", formatValue(value, exercise.unit) + (value !== null && exercise.unit === "seconds" ? " мин:сек" : "")));
     details.append(pair);
   }
-  renderChart(current.username);
+  const baseline = state.data.periods.find((item) => item.id === "baseline")?.rows.find((row) => row.username === current.username);
+  const startValue = valueFor(baseline);
+  $("detail-starting-total").textContent = startValue === null ? "" : `Стартовый тотал: ${formatValue(startValue)} ${unit() === "seconds" ? "мин:сек" : "повт."} · ${displayTime(baseline.captured_at || baseline.to)} МСК. Хранится отдельно от дневного прогресса.`;
 }
 
 function emptyChart(message, detail) {
@@ -358,64 +370,136 @@ function emptyChart(message, detail) {
   $("history-chart").replaceChildren(empty);
 }
 
-function renderChart(username) {
-  $("chart-unit").textContent = unit() === "seconds" ? "Секунды" : "Повторения";
-  const history = state.data.history.slice(-14).map((interval) => ({
-    ...interval, value: valueFor(interval.rows.find((row) => row.username === username)),
-  }));
-  if (!history.length) {
-    emptyChart("История начинается здесь", "После следующего снимка появится первый прирост. Стартовый тотал останется отдельно.");
-    return;
+function svgNode(tag, attributes = {}, text) {
+  const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const [name, value] of Object.entries(attributes)) element.setAttribute(name, String(value));
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
+
+const chartColors = ["#c0f36b", "#70c8f5", "#f7b267", "#c899f2", "#64d9be", "#f8849a", "#e2d572", "#8aa3ff", "#b6d5cb", "#e599dd", "#ce986b", "#73b67b", "#c7c2f0", "#57a8a1", "#e5bca7"];
+function playerColor(username) {
+  return chartColors[state.data.players.findIndex((player) => player.username === username) % chartColors.length];
+}
+
+function calendarLabel(date) {
+  return displayTime(`${date}T12:00:00+03:00`, true);
+}
+
+function inspectDay(index) {
+  const day = state.chartDays[index];
+  if (!day) return;
+  state.chartDate = day.date;
+  $("chart-day").value = String(index);
+  $("chart-day-label").textContent = calendarLabel(day.date);
+  const values = state.data.players.map((player) => ({ player, row: day.rows.find((row) => row.username === player.username) }));
+  const measured = values.filter(({ row }) => valueFor(row) !== null);
+  const total = measured.length ? measured.reduce((sum, { row }) => sum + valueFor(row), 0) : null;
+  const flags = [day.in_progress ? "День продолжается" : day.partial ? "Неполный день" : "", `Данные ${measured.length} из ${values.length}`, `Сумма: ${formatValue(total)}${unit() === "seconds" ? " мин:сек" : ""}`].filter(Boolean);
+  $("chart-day-note").textContent = flags.join(" · ");
+  $("chart-day").setAttribute("aria-valuetext", `${calendarLabel(day.date)}. ${flags.join(". ")}`);
+  const readout = $("chart-readout");
+  readout.replaceChildren();
+  for (const { player, row } of values) {
+    const item = node("li", "chart-player-result");
+    const name = node("span", "chart-player-name", shownName(player.username));
+    name.style.setProperty("--player-color", playerColor(player.username));
+    const value = valueFor(row);
+    const count = node("strong", "", value === null ? "Нет данных" : `${formatValue(value)}${row?.partial ? "*" : ""}`);
+    if (row?.partial && value !== null) count.title = `Неполный интервал: ${displayTime(row.from)} — ${displayTime(row.to)} МСК`;
+    item.append(name, count); readout.append(item);
   }
-  if (!history.some((interval) => interval.value !== null)) {
-    emptyChart("Пока нет истории игрока", "Нужны два успешных снимка, чтобы посчитать прирост по этому упражнению.");
+  for (const group of $("history-chart").querySelectorAll("[data-date]")) {
+    group.classList.toggle("selected-day", group.dataset.date === day.date);
+  }
+}
+
+function renderChart() {
+  const days = GymMetrics.chartDays(state.data, state.live);
+  $("chart-unit").textContent = `${selectedExercise()?.label || "Все повторения"} · ${unit() === "seconds" ? "время за день, мин:сек" : "повторения за день"}`;
+  const end = GymMetrics.moscowDate(new Date());
+  const beginning = days[0]?.date || end;
+  if (!state.chartFrom) state.chartFrom = days[Math.max(0, days.length - 30)]?.date || beginning;
+  if (!state.chartTo) state.chartTo = end;
+  for (const [id, value] of [["chart-from", state.chartFrom], ["chart-to", state.chartTo]]) {
+    $(id).value = value; $(id).max = end;
+  }
+  const invalid = state.chartFrom > state.chartTo;
+  $("chart-range-error").hidden = !invalid;
+  state.chartDays = invalid ? [] : days.filter((day) => day.date >= state.chartFrom && day.date <= state.chartTo);
+  const history = state.chartDays;
+  const legend = $("chart-legend");
+  legend.replaceChildren();
+  for (const player of state.data.players) {
+    const button = node("button", "chart-legend-item", shownName(player.username));
+    button.type = "button";
+    button.style.setProperty("--player-color", playerColor(player.username));
+    button.setAttribute("aria-pressed", String(state.chartFocus === player.username));
+    button.setAttribute("aria-label", `Выделить ${shownName(player.username)} на графике`);
+    button.addEventListener("click", () => { state.chartFocus = state.chartFocus === player.username ? null : player.username; renderChart(); });
+    legend.append(button);
+  }
+  $("chart-inspector").hidden = !history.length;
+  if (!history.length) {
+    emptyChart(invalid ? "Проверь диапазон дат" : "Пока нет дневной истории", invalid ? "Дата начала должна быть не позже даты окончания." : "После обновления появится сегодняшний прирост. Прошлые дни начнут накапливаться с первого ночного снимка.");
     return;
   }
   const target = $("history-chart");
   target.replaceChildren();
-  const svgNS = "http://www.w3.org/2000/svg";
-  const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("viewBox", "0 0 320 164");
-  svg.setAttribute("class", "chart-svg");
-  svg.setAttribute("role", "img");
-  const summary = history.map((interval) => `${displayTime(interval.to, true)}: ${interval.value === null ? "нет данных" : numeric.format(interval.value)}${interval.partial ? ", неполный день" : ""}`).join("; ");
-  svg.setAttribute("aria-label", `Прирост ${shownName(username)} по снимкам. ${summary}`);
-  const max = Math.max(1, ...history.map((interval) => interval.value || 0));
-  const gap = 6;
-  const step = 308 / history.length;
-  history.forEach((interval, index) => {
-    const bar = document.createElementNS(svgNS, "rect");
-    const height = interval.value === null ? 2 : Math.max(2, interval.value / max * 116);
-    const width = Math.min(32, step - gap);
-    const x = 6 + step * index + (step - width) / 2;
-    bar.setAttribute("x", String(x)); bar.setAttribute("y", String(136 - height));
-    bar.setAttribute("width", String(width)); bar.setAttribute("height", String(height));
-    bar.setAttribute("rx", "3");
-    bar.setAttribute("fill", interval.value === null ? "#4c5745" : index === history.length - 1 ? "#c0f36b" : "#6f9450");
-    const title = document.createElementNS(svgNS, "title");
-    title.textContent = `${displayTime(interval.from)} — ${displayTime(interval.to)} МСК: ${formatValue(interval.value)}${interval.partial ? " · неполный интервал" : ""}`;
-    bar.append(title); svg.append(bar);
-    if (history.length <= 7 && interval.value !== null) {
-      const label = document.createElementNS(svgNS, "text");
-      label.setAttribute("x", String(x + width / 2)); label.setAttribute("y", String(128 - height));
-      label.setAttribute("fill", "#a3afa0"); label.setAttribute("font-size", "11"); label.setAttribute("text-anchor", "middle");
-      label.textContent = numeric.format(interval.value);
-      svg.append(label);
-    }
-  });
-  const axis = document.createElementNS(svgNS, "path");
-  axis.setAttribute("d", "M4 138H316"); axis.setAttribute("stroke", "#303a2d"); svg.append(axis);
-  for (const [index, anchor, x] of [[0, "start", 6], [history.length - 1, "end", 314]]) {
-    if (index === 0 && history.length === 1 && anchor === "end") continue;
-    const label = document.createElementNS(svgNS, "text");
-    label.setAttribute("x", String(x)); label.setAttribute("y", "159"); label.setAttribute("fill", "#748370");
-    label.setAttribute("font-size", "11"); label.setAttribute("text-anchor", anchor);
-    label.textContent = displayTime(history[index].to, true); svg.append(label);
+  const width = Math.max(300, target.clientWidth, history.length * 30 + 70);
+  const left = 60, right = 20, top = 18, bottom = 254;
+  const step = (width - left - right) / history.length;
+  const barWidth = Math.min(48, Math.max(12, step - 10));
+  const totals = history.map((day) => day.rows.reduce((sum, row) => sum + (valueFor(row) ?? 0), 0));
+  const maximum = Math.max(1, ...totals);
+  const magnitude = 10 ** Math.floor(Math.log10(maximum / 4));
+  const yMax = Math.max(4, Math.ceil(maximum / magnitude / 4) * magnitude * 4);
+  const scale = (bottom - top) / yMax;
+  const svg = svgNode("svg", { viewBox: `0 0 ${width} 294`, width, height: 294, class: "stacked-chart", role: "img", "aria-label": "Дневной прирост клана: каждый столбец — день, цветные сегменты — участники. Точные значения доступны под графиком." });
+  for (let tick = 0; tick <= 4; tick++) {
+    const value = yMax * tick / 4, y = bottom - value * scale;
+    svg.append(svgNode("line", { x1: left, x2: width - right, y1: y, y2: y, stroke: "#303a2d", "stroke-dasharray": tick ? "3 5" : "none" }));
+    svg.append(svgNode("text", { x: left - 10, y: y + 4, fill: "#9aa994", "font-size": 12, "text-anchor": "end" }, formatValue(value)));
   }
-  target.append(svg, node("p", "chart-caption", "Прирост между снимками · последние 14 интервалов. Стартовый тотал не включён."));
-  const accessible = node("ul", "sr-only");
-  history.forEach((interval) => accessible.append(node("li", "", `${displayTime(interval.from)} — ${displayTime(interval.to)}: ${formatValue(interval.value)}${interval.partial ? ", неполный интервал" : ""}`)));
-  target.append(accessible);
+  history.forEach((day, index) => {
+    const x = left + step * index + (step - barWidth) / 2;
+    const group = svgNode("g", { "data-date": day.date });
+    const known = day.rows.filter((row) => valueFor(row) !== null);
+    const background = svgNode("rect", { x: left + step * index, y: top - 8, width: step, height: bottom - top + 8, fill: "#c0f36b", opacity: 0, class: "chart-day-highlight" });
+    group.append(background);
+    let accumulated = 0;
+    for (const player of state.data.players) {
+      const row = day.rows.find((row) => row.username === player.username);
+      const value = valueFor(row);
+      if (value === null || value <= 0) continue;
+      const height = value * scale;
+      const bar = svgNode("rect", { x, y: bottom - (accumulated + value) * scale, width: barWidth, height, fill: playerColor(player.username), stroke: "#171d16", "stroke-width": .7, opacity: !state.chartFocus || state.chartFocus === player.username ? 1 : .25, "data-player": player.username });
+      bar.append(svgNode("title", {}, `${calendarLabel(day.date)} · ${shownName(player.username)}: ${formatValue(value)}${unit() === "seconds" ? " мин:сек" : " повт."}${row.partial ? " · неполный день" : ""}`));
+      group.append(bar); accumulated += value;
+    }
+    if (!known.length) {
+      group.append(svgNode("rect", { x, y: bottom - 28, width: barWidth, height: 28, fill: "none", stroke: "#72806a", "stroke-dasharray": "3 3" }));
+      group.append(svgNode("text", { x: x + barWidth / 2, y: bottom - 9, fill: "#9aa994", "font-size": 14, "text-anchor": "middle" }, "—"));
+    } else if (!accumulated) {
+      group.append(svgNode("text", { x: x + barWidth / 2, y: bottom - 8, fill: "#9aa994", "font-size": 12, "text-anchor": "middle" }, "0"));
+    }
+    if (known.length && (known.length < state.data.players.length || day.partial || day.in_progress)) {
+      group.append(svgNode("text", { x: x + barWidth / 2, y: Math.max(12, bottom - accumulated * scale - 6), fill: "#9aa994", "font-size": 12, "text-anchor": "middle" }, "*"));
+    }
+    const labelEvery = Math.max(1, Math.ceil(history.length / (width / 72)));
+    if (index % labelEvery === 0 || index === history.length - 1) {
+      group.append(svgNode("text", { x: x + barWidth / 2, y: 279, fill: "#9aa994", "font-size": 12, "text-anchor": "middle" }, calendarLabel(day.date)));
+    }
+    const hit = svgNode("rect", { x: left + step * index, y: top - 8, width: step, height: bottom - top + 33, fill: "transparent", class: "chart-day-hit" });
+    hit.append(svgNode("title", {}, `${calendarLabel(day.date)}: ${known.length ? formatValue(accumulated) : "нет данных"}. Данные ${known.length} из ${state.data.players.length}.`));
+    hit.addEventListener("pointerenter", () => inspectDay(index));
+    hit.addEventListener("click", () => inspectDay(index));
+    group.append(hit); svg.append(group);
+  });
+  target.append(svg);
+  $("chart-day").max = String(history.length - 1);
+  const selectedIndex = history.findIndex((day) => day.date === state.chartDate);
+  inspectDay(selectedIndex < 0 ? history.length - 1 : selectedIndex);
 }
 
 function updateURL() {
@@ -427,16 +511,96 @@ function updateURL() {
 }
 
 function render(announce = false) {
+  state.periods = GymMetrics.periodsFor(state.data, state.live);
   const ranked = rankRows();
   for (const button of $("period-options").children) button.setAttribute("aria-pressed", String(button.dataset.period === state.period));
   renderSummary(ranked);
   renderRanking(ranked);
   renderDetail(ranked);
+  renderChart();
   updateURL();
   if (announce) $("announcement").textContent = `${currentPeriod().label}. ${selectedExercise()?.label || "Все повторения"}. Рейтинг обновлён.`;
 }
 
+async function publicRows(table, query) {
+  const config = state.data.source;
+  if (!config?.base_url || !config?.publishable_key) throw new Error("No public source configuration");
+  const url = `${config.base_url}/rest/v1/${table}?${new URLSearchParams(query)}`;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 20000);
+  try {
+    const response = await fetch(url, { headers: { apikey: config.publishable_key, Accept: "application/json" }, signal: controller.signal });
+    if (!response.ok) throw new Error(`Public API: HTTP ${response.status}`);
+    const rows = await response.json();
+    if (!Array.isArray(rows)) throw new Error("Invalid public API response");
+    return rows;
+  } finally { clearTimeout(timer); }
+}
+
+async function fetchLivePlayer(player) {
+  const query = { select: "id,username,total_level,combat_level,coins,skills_xp", limit: "2" };
+  if (player.id) query.id = `eq.${player.id}`;
+  else query.username = `ilike.${player.username.replace(/[\\%_*]/g, "\\$&")}`;
+  const profiles = await publicRows("hiscores_full_v2", query);
+  if (profiles.length > 1) throw new Error("Ambiguous public profile");
+  const profile = profiles[0] || null;
+  if (profile && (typeof profile.id !== "string" || typeof profile.username !== "string" || (player.id && profile.id !== player.id))) throw new Error("Unexpected public identity");
+  const canonical = profile?.username || player.username;
+  const rows = player.id && !profile ? [] : await publicRows("exercise_hiscores", {
+    select: "username,exercise_id,reps", username: `eq.${canonical}`, order: "exercise_id.asc", limit: "500",
+  });
+  if (rows.length >= 500) throw new Error("Possibly truncated public counters");
+  const values = Object.create(null);
+  for (const row of rows) {
+    if (row.username !== canonical || typeof row.exercise_id !== "string" || !row.exercise_id || Object.hasOwn(values, row.exercise_id) || !Number.isSafeInteger(row.reps) || row.reps < 0) throw new Error("Invalid public counter");
+    values[row.exercise_id] = row.reps;
+  }
+  return { username: player.username, canonical_username: canonical, status: rows.length ? "ok" : "missing", profile, values, captured_at: new Date().toISOString() };
+}
+
+async function refreshLive() {
+  if (state.refreshing || !state.data) return;
+  state.refreshing = true;
+  $("refresh-live").disabled = true;
+  $("refresh-live").textContent = "Обновляем…";
+  $("updated-at").textContent = "Получаем свежие счётчики…";
+  try {
+    const players = [], roster = state.data.players;
+    let next = 0;
+    const outcomes = await Promise.allSettled(Array.from({ length: Math.min(3, roster.length) }, async () => {
+      while (next < roster.length) {
+        const index = next++;
+        players[index] = await fetchLivePlayer(roster[index]);
+      }
+    }));
+    const failure = outcomes.find((outcome) => outcome.status === "rejected");
+    if (failure) throw failure.reason;
+    if (roster.length && !players.some((player) => player.status === "ok")) throw new Error("No public counters returned");
+    state.live = { captured_at: new Date().toISOString(), players };
+    const known = new Set(state.data.exercises.map((exercise) => exercise.id));
+    for (const player of players) for (const id of Object.keys(player.values)) {
+      if (!known.has(id)) {
+        state.data.exercises.push({ id, label: id, unit: "unknown", include_in_rep_total: false });
+        known.add(id);
+      }
+    }
+    $("updated-at").textContent = `Обновлено: ${displayTime(state.live.captured_at)} МСК`;
+    state.periods = GymMetrics.periodsFor(state.data, state.live);
+    makeFilters();
+    render();
+  } catch (error) {
+    $("updated-at").textContent = `Не удалось обновить. Данные: ${displayTime(state.live?.captured_at || state.data.latest_at)} МСК`;
+    $("announcement").textContent = "Свежие счётчики недоступны. Показаны сохранённые данные.";
+    console.warn("Could not refresh public counters:", error.message);
+  } finally {
+    state.refreshing = false;
+    $("refresh-live").disabled = false;
+    $("refresh-live").textContent = "Обновить";
+  }
+}
+
 async function load() {
+  if (state.refreshing) return;
   $("dashboard").setAttribute("aria-busy", "true");
   $("load-error").hidden = true;
   try {
@@ -444,11 +608,13 @@ async function load() {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     if (data.schema_version !== 1 || !Array.isArray(data.players) || !Array.isArray(data.exercises) || !data.periods?.length || !Array.isArray(data.history)) throw new Error("Unexpected data format");
+    const rosterVersion = (snapshot) => JSON.stringify(snapshot?.players.map((player) => [player.username, player.id]));
+    if (state.data && (state.data.generated_at !== data.generated_at || rosterVersion(state.data) !== rosterVersion(data))) state.live = null;
     state.data = data;
+    state.periods = GymMetrics.periodsFor(data, state.live);
     const params = new URLSearchParams(window.location.search);
     const wantedPeriod = params.get("period");
-    state.period = data.periods.some((period) => period.id === wantedPeriod)
-      ? wantedPeriod : data.periods.find((period) => period.id === "day" && period.available)?.id || "baseline";
+    state.period = state.periods.some((period) => period.id === wantedPeriod) ? wantedPeriod : "total";
     state.exercise = params.get("exercise") || state.exercise;
     const wantedPlayer = params.get("player") || state.player;
     state.player = data.players.find((player) => player.username === wantedPlayer)?.username || data.players[0]?.username || "";
@@ -456,6 +622,7 @@ async function load() {
     makeFilters();
     renderParticipants();
     render();
+    await refreshLive();
   } catch (error) {
     $("load-error").hidden = false;
     $("load-error-detail").textContent = "Проверь соединение и попробуй ещё раз. Если сайт только что опубликован, данные могут появиться через несколько минут.";
@@ -479,6 +646,23 @@ $("player-search").addEventListener("input", (event) => {
   if (state.data) renderRanking(rankRows());
 });
 $("retry-load").addEventListener("click", load);
+$("refresh-live").addEventListener("click", load);
+for (const id of ["chart-from", "chart-to"]) $(id).addEventListener("change", (event) => {
+  if (id === "chart-from") state.chartFrom = event.target.value;
+  else state.chartTo = event.target.value;
+  if (state.data) renderChart();
+});
+$("chart-day").addEventListener("input", (event) => inspectDay(Number(event.target.value)));
+let resizeTimer;
+window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (state.data) renderChart(); }, 150); });
+let calendarDay = GymMetrics.moscowDate(new Date());
+setInterval(() => {
+  const today = GymMetrics.moscowDate(new Date());
+  if (today !== calendarDay && !document.hidden && !state.refreshing) {
+    calendarDay = today; state.live = null; state.chartTo = today;
+    load();
+  }
+}, 60000);
 $("manage-participants").addEventListener("click", () => toggleParticipants());
 $("close-participants").addEventListener("click", () => toggleParticipants(false));
 $("participant-nickname").addEventListener("input", () => {

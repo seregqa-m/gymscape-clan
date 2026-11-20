@@ -280,17 +280,30 @@ def build(root=ROOT):
     discovered = set().union(*(p["values"].keys() for s in chain for p in s["players"]))
     for exercise in sorted(discovered - known - {"tutorial", "wilderness"}):
         catalog.append({"id": exercise, "label": exercise, "unit": "unknown", "include_in_rep_total": False})
-    players = []
+    players, day_references = [], []
     for name in names:
         snapshot, p = latest_records.get(name, (None, {"username": name, "status": "missing"}))
         profile = p.get("profile")
+        known_id = next(((player_at(s, name).get("profile") or {}).get("id")
+                         for s in reversed(chain) if player_at(s, name) is not None and
+                         (player_at(s, name).get("profile") or {}).get("id")), None)
         players.append({"username": name, "canonical_username": p.get("canonical_username", name),
+                        "id": known_id,
                         "status": p["status"], "profile": {k: v for k, v in profile.items() if k != "id"} if profile else None,
                         "captured_at": measured_at(snapshot, p) if snapshot else None})
+        day_references.append({"username": name, "status": p["status"], "values": p.get("values", {}),
+                               "captured_at": measured_at(snapshot, p) if snapshot else None,
+                               "kind": snapshot["kind"] if snapshot else None,
+                               "boundary_date": snapshot.get("boundary_date") if snapshot else None,
+                               "profile_id": (profile or {}).get("id") or known_id})
+    config_path = root / "public_client.json"
+    config = read_json(config_path) if config_path.exists() else None
+    source = {key: config[key] for key in ("base_url", "publishable_key")} if config else None
     dashboard = {"schema_version": 1, "timezone": "Europe/Moscow", "schedule": "00:00 МСК",
                  "generated_at": latest_at, "baseline_at": baseline["captured_at"],
                  "latest_at": latest_at, "exercises": catalog, "players": players,
-                 "periods": periods, "history": history}
+                 "periods": periods, "history": history,
+                 "source": source, "day_references": day_references}
     write_json(root / "site/data/dashboard.json", dashboard)
     print("Built dashboard:", len(players), "players,", len(history), "daily intervals")
     return dashboard

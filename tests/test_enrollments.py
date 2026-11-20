@@ -195,6 +195,28 @@ class EnrollmentTests(unittest.TestCase):
         self.assertEqual(period_row(data, 'day', 'Bob')['values']['pushUps'], 10)
         self.assertEqual(period_row(data, 'week', 'Bob')['values']['pushUps'], 10)
 
+    def test_today_reference_is_personal_latest_capture(self):
+        baseline = event('2026-11-20T10:00:00+00:00', [player('alice', 100)], 'baseline')
+        daily = event('2026-11-20T21:05:00+00:00', [player('alice', 120)])
+        enrollment = event('2026-11-21T12:00:00+00:00', [player('bob', 500)], 'enrollment')
+        data = self.make_dashboard(['alice', 'bob'], [baseline, daily, enrollment])
+        references = {r['username']: r for r in data['day_references']}
+        self.assertEqual(references['alice']['kind'], 'daily')
+        self.assertEqual(references['alice']['boundary_date'], '2026-11-21')
+        self.assertEqual(references['bob']['kind'], 'enrollment')
+        self.assertEqual(references['bob']['values']['pushUps'], 500)
+        self.assertIsNone(data['source'])
+
+    def test_public_identity_is_preserved_when_latest_profile_is_missing(self):
+        baseline = event('2026-11-20T10:00:00+00:00', [player('alice', 100, identity='stable-id')], 'baseline')
+        missing = player('alice', status='missing')
+        missing['profile'] = None
+        daily = event('2026-11-20T21:05:00+00:00', [missing])
+        data = self.make_dashboard(['alice'], [baseline, daily])
+        self.assertEqual(data['players'][0]['id'], 'stable-id')
+        self.assertEqual(data['day_references'][0]['profile_id'], 'stable-id')
+        self.assertEqual(data['day_references'][0]['status'], 'missing')
+
 
 if __name__ == '__main__':
     unittest.main()
