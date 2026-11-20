@@ -177,7 +177,7 @@
     "id": "labJogInPlace",
     "label": "Бег на месте",
     "unit": "reps",
-    "include_in_rep_total": true
+    "include_in_rep_total": false
   },
   {
     "id": "labArmPulses",

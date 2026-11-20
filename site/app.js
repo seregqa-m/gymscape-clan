@@ -246,7 +246,7 @@ function renderSummary(ranked) {
   $("period-note").querySelector("span").textContent = description + baselineNote + range;
   $("value-heading").textContent = unit() === "seconds" ? "Мин:сек" : unit() === "reps" ? "Повторения" : "Значение";
   $("ranking-footnote").textContent = state.exercise === "all"
-    ? "Сумма повторений разных упражнений. Планка и служебные упражнения не входят в зачёт."
+    ? "Сумма повторений разных упражнений. Упражнения на время, бег на месте и служебные упражнения не входят в зачёт."
     : unit() === "seconds"
       ? "Планка считается в секундах. Здесь время показано как минуты:секунды."
       : "Одинаковый результат — одинаковое место. Нажми на игрока, чтобы открыть упражнения.";
