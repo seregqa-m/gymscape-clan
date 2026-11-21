@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 10
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -63,7 +63,21 @@ jobs:
           path: site
       - name: Publish
         id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 120000
+      # GitHub can acknowledge an upload before the artifact listing sees it.
+      # Retry the same saved package; never recapture or overwrite history.
+      - name: Wait before retrying publication
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 20
+      - name: Retry publication
+        id: deployment_retry
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 120000
       - name: Close processed roster requests
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
