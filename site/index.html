@@ -78,7 +78,7 @@
 
           <section class="clan-chart-panel" aria-labelledby="clan-chart-title">
             <div class="clan-chart-heading">
-              <div><p class="section-kicker">Все активные участники</p><h2 id="clan-chart-title">Динамика клана</h2><p id="chart-unit" class="clan-chart-subtitle">Повторения за день</p></div>
+              <div><p class="section-kicker">Участники с результатами</p><h2 id="clan-chart-title">Динамика клана</h2><p id="chart-unit" class="clan-chart-subtitle">Повторения за день</p></div>
               <div class="chart-range"><label for="chart-from">С<input id="chart-from" type="date"></label><label for="chart-to">По<input id="chart-to" type="date"></label></div>
             </div>
             <p id="chart-range-error" class="participant-feedback is-error" role="alert" hidden>Начало периода должно быть не позже окончания.</p>
@@ -89,7 +89,7 @@
               <input id="chart-day" type="range" min="0" max="0" value="0" step="1" aria-label="День на графике">
               <ul id="chart-readout" class="chart-readout" aria-live="polite"></ul>
             </div>
-            <p class="chart-caption">Столбец — результат клана за день, цвет — вклад участника. «—» означает отсутствие данных. Звёздочка — неполный день или состав; подробности — под графиком. Стартовый тотал не включён.</p>
+            <p class="chart-caption">Внутри каждого дня столбцы участников стоят рядом. Цвет обозначает игрока. Показаны участники с ненулевым результатом хотя бы в один из выбранных дней. «—» — нет данных, звёздочка — неполный день или состав. Стартовый тотал не включён.</p>
           </section>
 
           <div class="content-grid">

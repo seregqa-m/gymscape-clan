@@ -400,7 +400,7 @@ function inspectDay(index) {
   $("chart-day").setAttribute("aria-valuetext", `${calendarLabel(day.date)}. ${flags.join(". ")}`);
   const readout = $("chart-readout");
   readout.replaceChildren();
-  for (const { player, row } of values) {
+  for (const { player, row } of values.filter(({ player }) => state.chartPlayers.some((item) => item.username === player.username))) {
     const item = node("li", "chart-player-result");
     const name = node("span", "chart-player-name", shownName(player.username));
     name.style.setProperty("--player-color", playerColor(player.username));
@@ -428,9 +428,14 @@ function renderChart() {
   $("chart-range-error").hidden = !invalid;
   state.chartDays = invalid ? [] : days.filter((day) => day.date >= state.chartFrom && day.date <= state.chartTo);
   const history = state.chartDays;
+  // Keep one stable slot per participant across the selected dates. A player
+  // appears only when there is a measured positive result in this range.
+  state.chartPlayers = state.data.players.filter((player) => history.some((day) =>
+    valueFor(day.rows.find((row) => row.username === player.username)) > 0));
+  if (!state.chartPlayers.some((player) => player.username === state.chartFocus)) state.chartFocus = null;
   const legend = $("chart-legend");
   legend.replaceChildren();
-  for (const player of state.data.players) {
+  for (const player of state.chartPlayers) {
     const button = node("button", "chart-legend-item", shownName(player.username));
     button.type = "button";
     button.style.setProperty("--player-color", playerColor(player.username));
@@ -439,6 +444,7 @@ function renderChart() {
     button.addEventListener("click", () => { state.chartFocus = state.chartFocus === player.username ? null : player.username; renderChart(); });
     legend.append(button);
   }
+  if (history.length && !state.chartPlayers.length) legend.append(node("p", "chart-caption", "За выбранные даты нет ненулевых результатов по этому упражнению."));
   $("chart-inspector").hidden = !history.length;
   if (!history.length) {
     emptyChart(invalid ? "Проверь диапазон дат" : "Пока нет дневной истории", invalid ? "Дата начала должна быть не позже даты окончания." : "После обновления появится сегодняшний прирост. Прошлые дни начнут накапливаться с первого ночного снимка.");
@@ -446,55 +452,69 @@ function renderChart() {
   }
   const target = $("history-chart");
   target.replaceChildren();
-  const width = Math.max(300, target.clientWidth, history.length * 30 + 70);
+  const playerCount = Math.max(1, state.chartPlayers.length);
+  const groupMinimum = Math.max(74, playerCount * 15 + 24);
+  const width = Math.max(300, target.clientWidth, history.length * groupMinimum + 80);
   const left = 60, right = 20, top = 18, bottom = 254;
   const step = (width - left - right) / history.length;
-  const barWidth = Math.min(48, Math.max(12, step - 10));
-  const totals = history.map((day) => day.rows.reduce((sum, row) => sum + (valueFor(row) ?? 0), 0));
-  const maximum = Math.max(1, ...totals);
+  const barGap = 4;
+  const barWidth = Math.min(30, (step - 24 - barGap * (playerCount - 1)) / playerCount);
+  const groupWidth = playerCount * barWidth + (playerCount - 1) * barGap;
+  const maximum = history.reduce((max, day) => day.rows.reduce((value, row) => Math.max(value, valueFor(row) ?? 0), max), 1);
   const magnitude = 10 ** Math.floor(Math.log10(maximum / 4));
   const yMax = Math.max(4, Math.ceil(maximum / magnitude / 4) * magnitude * 4);
   const scale = (bottom - top) / yMax;
-  const svg = svgNode("svg", { viewBox: `0 0 ${width} 294`, width, height: 294, class: "stacked-chart", role: "img", "aria-label": "Дневной прирост клана: каждый столбец — день, цветные сегменты — участники. Точные значения доступны под графиком." });
+  const svg = svgNode("svg", { viewBox: `0 0 ${width} 294`, width, height: 294, class: "grouped-chart", role: "img", "aria-label": "Дневной прирост участников: внутри каждого дня отдельные цветные столбцы стоят рядом на общей нулевой линии. Точные значения доступны под графиком." });
   for (let tick = 0; tick <= 4; tick++) {
     const value = yMax * tick / 4, y = bottom - value * scale;
     svg.append(svgNode("line", { x1: left, x2: width - right, y1: y, y2: y, stroke: "#303a2d", "stroke-dasharray": tick ? "3 5" : "none" }));
     svg.append(svgNode("text", { x: left - 10, y: y + 4, fill: "#9aa994", "font-size": 12, "text-anchor": "end" }, formatValue(value)));
   }
   history.forEach((day, index) => {
-    const x = left + step * index + (step - barWidth) / 2;
+    const groupX = left + step * index + (step - groupWidth) / 2;
+    const centerX = left + step * (index + .5);
     const group = svgNode("g", { "data-date": day.date });
     const known = day.rows.filter((row) => valueFor(row) !== null);
     const background = svgNode("rect", { x: left + step * index, y: top - 8, width: step, height: bottom - top + 8, fill: "#c0f36b", opacity: 0, class: "chart-day-highlight" });
     group.append(background);
-    let accumulated = 0;
-    for (const player of state.data.players) {
+    const hit = svgNode("rect", { x: left + step * index, y: top - 8, width: step, height: bottom - top + 33, fill: "transparent", class: "chart-day-hit" });
+    group.append(hit);
+    let dayMaximum = 0;
+    state.chartPlayers.forEach((player, playerIndex) => {
       const row = day.rows.find((row) => row.username === player.username);
       const value = valueFor(row);
-      if (value === null || value <= 0) continue;
+      const x = groupX + playerIndex * (barWidth + barGap);
+      const color = playerColor(player.username);
+      const opacity = !state.chartFocus || state.chartFocus === player.username ? 1 : .25;
+      const title = `${calendarLabel(day.date)} · ${shownName(player.username)}: ${value === null ? "нет данных" : `${formatValue(value)} ${unit() === "seconds" ? "мин:сек" : "повт."}`}${row?.partial ? " · неполный день" : ""}`;
+      const slot = svgNode("rect", { x, y: top, width: barWidth, height: bottom - top, fill: "transparent", class: "chart-day-hit" });
+      slot.append(svgNode("title", {}, title));
+      group.append(slot);
+      if (value === null || value === 0) {
+        const marker = svgNode("text", { x: x + barWidth / 2, y: bottom - 6, fill: color, opacity, "font-size": 11, "text-anchor": "middle" }, value === null ? "—" : "0");
+        marker.append(svgNode("title", {}, title));
+        group.append(marker);
+        return;
+      }
       const height = value * scale;
-      const bar = svgNode("rect", { x, y: bottom - (accumulated + value) * scale, width: barWidth, height, fill: playerColor(player.username), stroke: "#171d16", "stroke-width": .7, opacity: !state.chartFocus || state.chartFocus === player.username ? 1 : .25, "data-player": player.username });
-      bar.append(svgNode("title", {}, `${calendarLabel(day.date)} · ${shownName(player.username)}: ${formatValue(value)}${unit() === "seconds" ? " мин:сек" : " повт."}${row.partial ? " · неполный день" : ""}`));
-      group.append(bar); accumulated += value;
-    }
-    if (!known.length) {
-      group.append(svgNode("rect", { x, y: bottom - 28, width: barWidth, height: 28, fill: "none", stroke: "#72806a", "stroke-dasharray": "3 3" }));
-      group.append(svgNode("text", { x: x + barWidth / 2, y: bottom - 9, fill: "#9aa994", "font-size": 14, "text-anchor": "middle" }, "—"));
-    } else if (!accumulated) {
-      group.append(svgNode("text", { x: x + barWidth / 2, y: bottom - 8, fill: "#9aa994", "font-size": 12, "text-anchor": "middle" }, "0"));
+      const bar = svgNode("rect", { x, y: bottom - height, width: barWidth, height, fill: color, rx: 1.5, opacity, "data-player": player.username, "data-value": value });
+      bar.append(svgNode("title", {}, title));
+      group.append(bar);
+      dayMaximum = Math.max(dayMaximum, value);
+    });
+    if (!state.chartPlayers.length) {
+      group.append(svgNode("text", { x: centerX, y: bottom - 8, fill: "#9aa994", "font-size": 12, "text-anchor": "middle" }, known.length ? "0" : "—"));
     }
     if (known.length && (known.length < state.data.players.length || day.partial || day.in_progress)) {
-      group.append(svgNode("text", { x: x + barWidth / 2, y: Math.max(12, bottom - accumulated * scale - 6), fill: "#9aa994", "font-size": 12, "text-anchor": "middle" }, "*"));
+      group.append(svgNode("text", { x: centerX, y: Math.max(12, bottom - dayMaximum * scale - 6), fill: "#9aa994", "font-size": 12, "text-anchor": "middle" }, "*"));
     }
     const labelEvery = Math.max(1, Math.ceil(history.length / (width / 72)));
     if (index % labelEvery === 0 || index === history.length - 1) {
-      group.append(svgNode("text", { x: x + barWidth / 2, y: 279, fill: "#9aa994", "font-size": 12, "text-anchor": "middle" }, calendarLabel(day.date)));
+      group.append(svgNode("text", { x: centerX, y: 279, fill: "#9aa994", "font-size": 12, "text-anchor": "middle" }, calendarLabel(day.date)));
     }
-    const hit = svgNode("rect", { x: left + step * index, y: top - 8, width: step, height: bottom - top + 33, fill: "transparent", class: "chart-day-hit" });
-    hit.append(svgNode("title", {}, `${calendarLabel(day.date)}: ${known.length ? formatValue(accumulated) : "нет данных"}. Данные ${known.length} из ${state.data.players.length}.`));
-    hit.addEventListener("pointerenter", () => inspectDay(index));
-    hit.addEventListener("click", () => inspectDay(index));
-    group.append(hit); svg.append(group);
+    group.addEventListener("pointerenter", () => inspectDay(index));
+    group.addEventListener("click", () => inspectDay(index));
+    svg.append(group);
   });
   target.append(svg);
   $("chart-day").max = String(history.length - 1);
