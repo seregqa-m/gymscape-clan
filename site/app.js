@@ -242,7 +242,7 @@ function renderSummary(ranked) {
     ? `${formatValue(first.value)} ${unit() === "seconds" ? "мин:сек" : "повт."}${tied > 1 ? ` · делит место с ${tied - 1}` : ""}`
     : period.available ? "Первое место ещё впереди" : "Нет данных за этот день";
   const description = period.description || "";
-  const range = period.from ? ` ${displayTime(period.from)} — ${displayTime(period.to)} МСК.` : "";
+  const range = period.available && period.from ? ` ${displayTime(period.from)} — ${displayTime(period.to)} МСК.` : "";
   $("period-note").querySelector("span").textContent = description + range;
   $("value-heading").textContent = unit() === "seconds" ? "Мин:сек" : unit() === "reps" ? "Повторения" : "Значение";
   $("ranking-footnote").textContent = state.exercise === "all"
@@ -250,6 +250,19 @@ function renderSummary(ranked) {
     : unit() === "seconds"
       ? "Планка считается в секундах. Здесь время показано как минуты:секунды."
       : "Одинаковый результат — одинаковое место. Нажми на игрока, чтобы открыть упражнения.";
+}
+
+function renderCaptureWarning() {
+  const today = GymMetrics.moscowDate(new Date());
+  const missing = state.data.players.some((player) => {
+    const reference = state.data.day_references.find((row) => row.username === player.username);
+    return reference?.status === "ok" && GymMetrics.moscowDate(reference.captured_at) !== today;
+  });
+  const warning = $("capture-warning");
+  warning.hidden = !missing;
+  warning.textContent = missing
+    ? "Сегодняшний снимок ещё не сохранён для части участников. Тоталы доступны, дневной прирост пока нельзя рассчитать. Последний сохранённый снимок: " + displayTime(state.data.latest_at) + " МСК."
+    : "";
 }
 
 function renderRanking(ranked) {
@@ -414,6 +427,34 @@ function inspectDay(index) {
   }
 }
 
+function renderHistoryRecovery() {
+  const panel = $("history-recovery");
+  panel.replaceChildren();
+  const intervals = state.chartFrom > state.chartTo ? [] : GymMetrics.unallocatedIntervals(state.data).filter((interval) =>
+    GymMetrics.moscowDate(interval.from) <= state.chartTo && GymMetrics.moscowDate(interval.to) >= state.chartFrom);
+  panel.hidden = !intervals.length;
+  for (const interval of intervals) {
+    const section = node("section", "recovery-interval");
+    section.append(node("h3", "", "Прирост за пропущенный интервал"));
+    section.append(node("p", "recovery-range", `${displayTime(interval.from)} — ${displayTime(interval.to)} МСК`));
+    section.append(node("p", "recovery-explanation", "Не хватает ежедневных снимков, поэтому разделить этот прирост по дням нельзя. Здесь показан весь интервал, даже если в фильтре выбрана только его часть."));
+    const measured = interval.rows.map((row) => ({ row, value: valueFor(row) })).filter(({ value }) => value !== null);
+    const total = measured.length ? measured.reduce((sum, { value }) => sum + value, 0) : null;
+    section.append(node("p", "recovery-total", `${selectedExercise()?.label || "Все повторения"}: ${formatValue(total)} ${unit() === "seconds" ? "мин:сек" : "повт."} · участников с данными: ${measured.length}`));
+    const list = node("ul", "chart-readout");
+    for (const { row, value } of measured.filter(({ value }) => value > 0).sort((a, b) => b.value - a.value)) {
+      const item = node("li", "chart-player-result");
+      const name = node("span", "chart-player-name", shownName(row.username));
+      name.style.setProperty("--player-color", playerColor(row.username));
+      item.title = `${displayTime(row.from)} — ${displayTime(row.to)} МСК`;
+      item.append(name, node("strong", "", formatValue(value)));
+      list.append(item);
+    }
+    section.append(list);
+    panel.append(section);
+  }
+}
+
 function renderChart() {
   const days = GymMetrics.chartDays(state.data, state.live);
   $("chart-unit").textContent = `${selectedExercise()?.label || "Все повторения"} · ${unit() === "seconds" ? "время за день, мин:сек" : "повторения за день"}`;
@@ -427,6 +468,7 @@ function renderChart() {
   const invalid = state.chartFrom > state.chartTo;
   $("chart-range-error").hidden = !invalid;
   state.chartDays = invalid ? [] : days.filter((day) => day.date >= state.chartFrom && day.date <= state.chartTo);
+  renderHistoryRecovery();
   const history = state.chartDays;
   // Keep one stable slot per participant across the selected dates. A player
   // appears only when there is a measured positive result in this range.
@@ -444,7 +486,13 @@ function renderChart() {
     button.addEventListener("click", () => { state.chartFocus = state.chartFocus === player.username ? null : player.username; renderChart(); });
     legend.append(button);
   }
-  if (history.length && !state.chartPlayers.length) legend.append(node("p", "chart-caption", "За выбранные даты нет ненулевых результатов по этому упражнению."));
+  if (history.length && !state.chartPlayers.length) {
+    const anyMeasured = history.some((day) => day.rows.some((row) => valueFor(row) !== null));
+    const message = !$("history-recovery").hidden
+      ? "Суммарный прирост за пропуск показан выше — разделить его на дневные столбцы нельзя."
+      : anyMeasured ? "За выбранные даты нет ненулевых результатов по этому упражнению." : "За выбранные даты нет дневных данных по этому упражнению.";
+    legend.append(node("p", "chart-caption", message));
+  }
   $("chart-inspector").hidden = !history.length;
   if (!history.length) {
     emptyChart(invalid ? "Проверь диапазон дат" : "Пока нет дневной истории", invalid ? "Дата начала должна быть не позже даты окончания." : "После обновления появится сегодняшний прирост. Прошлые дни начнут накапливаться с первого ночного снимка.");
@@ -535,6 +583,7 @@ function render(announce = false) {
   const ranked = rankRows();
   for (const button of $("period-options").children) button.setAttribute("aria-pressed", String(button.dataset.period === state.period));
   renderSummary(ranked);
+  renderCaptureWarning();
   renderRanking(ranked);
   renderDetail(ranked);
   renderChart();

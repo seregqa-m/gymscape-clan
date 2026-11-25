@@ -83,18 +83,84 @@ class RosterTests(unittest.TestCase):
         self.assertEqual(result['status'], 'rejected')
         self.assertEqual(json.loads((self.root / 'players.json').read_text()), ['alice'])
 
-    def test_auto_capture_skips_daytime_and_fills_midnight_once(self):
+    def test_auto_capture_fills_midnight_once_and_preserves_actual_time(self):
         with patch('collect.datetime') as clock, patch('collect.fetch_player') as fetch:
-            clock.now.return_value = datetime.fromisoformat('2026-11-20T10:00:00+00:00')
-            collect('auto', self.root)
-            fetch.assert_not_called()
-        with patch('collect.datetime') as clock, patch('collect.fetch_player') as fetch:
-            clock.now.return_value = datetime.fromisoformat('2026-11-20T21:05:00+00:00')
+            when = datetime.fromisoformat('2026-11-20T21:05:00+00:00')
+            clock.now.return_value = when
             fetch.return_value = self.fetcher('alice', {}, 'alice-id')
+            fetch.return_value['captured_at'] = when.isoformat()
             collect('auto', self.root)
+            path = self.root / 'history/daily/2026-11-21.json'
+            original = path.read_text()
+            snapshot = json.loads(original)
+            self.assertEqual(snapshot['captured_at'], when.isoformat())
+            self.assertEqual(snapshot['boundary_date'], '2026-11-21')
+            self.assertFalse(snapshot['late_capture'])
+            self.assertEqual(snapshot['capture_delay_seconds'], 300)
             collect('auto', self.root)
             self.assertEqual(fetch.call_count, 1)
-            self.assertTrue((self.root / 'history/daily/2026-11-21.json').exists())
+            self.assertEqual(path.read_text(), original)
+
+    def test_delayed_scheduled_runs_and_manual_afternoon_save_real_captures(self):
+        cases = [('auto', '2026-11-24T05:02:00+00:00', 8 * 3600 + 2 * 60),
+                 ('auto', '2026-11-25T03:51:00+00:00', 6 * 3600 + 51 * 60),
+                 ('daily', '2026-11-25T10:47:00+00:00', 13 * 3600 + 47 * 60)]
+        for index, (mode, timestamp, delay) in enumerate(cases):
+            with self.subTest(mode=mode, timestamp=timestamp):
+                root = self.root / str(index)
+                (root / 'history').mkdir(parents=True)
+                (root / 'history/baseline.json').write_text(json.dumps(self.baseline))
+                (root / 'players.json').write_text('["alice"]')
+                (root / 'public_client.json').write_text('{}')
+                baseline_before = (root / 'history/baseline.json').read_text()
+                when = datetime.fromisoformat(timestamp)
+                with patch('collect.datetime') as clock, patch('collect.fetch_player') as fetch:
+                    clock.now.return_value = when
+                    fetch.return_value = self.fetcher('alice', {}, 'alice-id')
+                    fetch.return_value['captured_at'] = timestamp
+                    collect(mode, root)
+                    path = root / 'history/daily' / (timestamp[:10] + '.json')
+                    original = path.read_text()
+                    snapshot = json.loads(original)
+                    self.assertEqual(snapshot['kind'], 'daily')
+                    self.assertEqual(snapshot['boundary_date'], timestamp[:10])
+                    self.assertEqual(snapshot['captured_at'], timestamp)
+                    self.assertEqual(snapshot['started_at'], timestamp)
+                    self.assertEqual(snapshot['players'][0]['captured_at'], timestamp)
+                    self.assertTrue(snapshot['late_capture'])
+                    self.assertEqual(snapshot['capture_delay_seconds'], delay)
+                    self.assertIsNotNone(datetime.fromisoformat(snapshot['captured_at']).tzinfo)
+                    # An on-demand retry never replaces that day's first capture.
+                    collect(mode, root)
+                    self.assertEqual(fetch.call_count, 1)
+                    self.assertEqual(path.read_text(), original)
+                self.assertEqual((root / 'history/baseline.json').read_text(), baseline_before)
+
+    def test_late_flag_and_delay_use_capture_finish_not_batch_start(self):
+        started = datetime.fromisoformat('2026-11-25T02:59:58+00:00')
+        finished = datetime.fromisoformat('2026-11-25T03:00:01+00:00')
+        with patch('collect.datetime') as clock, patch('collect.fetch_player') as fetch:
+            clock.now.side_effect = [started, finished]
+            fetch.return_value = self.fetcher('alice', {}, 'alice-id')
+            fetch.return_value['captured_at'] = finished.isoformat()
+            collect('auto', self.root)
+        snapshot = json.loads((self.root / 'history/daily/2026-11-25.json').read_text())
+        self.assertEqual(snapshot['started_at'], started.isoformat())
+        self.assertEqual(snapshot['captured_at'], finished.isoformat())
+        self.assertTrue(snapshot['late_capture'])
+        self.assertEqual(snapshot['capture_delay_seconds'], 21601)
+
+    def test_batch_crossing_moscow_midnight_fails_without_writing_wrong_date(self):
+        started = datetime.fromisoformat('2026-11-25T20:59:59+00:00')
+        finished = datetime.fromisoformat('2026-11-25T21:00:03+00:00')
+        with patch('collect.datetime') as clock, patch('collect.fetch_player') as fetch:
+            clock.now.side_effect = [started, finished]
+            fetch.return_value = self.fetcher('alice', {}, 'alice-id')
+            fetch.return_value['captured_at'] = finished.isoformat()
+            with self.assertRaisesRegex(ValueError, 'crossed Moscow midnight'):
+                collect('auto', self.root)
+        self.assertEqual(list((self.root / 'history/daily').glob('*.json')), [])
+        self.assertEqual(json.loads((self.root / 'history/baseline.json').read_text()), self.baseline)
 
 
 if __name__ == '__main__':

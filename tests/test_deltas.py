@@ -67,6 +67,20 @@ class DeltaTests(unittest.TestCase):
         self.assertEqual(row['gap_days'], 2)
         self.assertEqual(row['rows'][0]['values']['pushUps'], 30)
 
+    def test_late_capture_makes_both_adjacent_intervals_partial(self):
+        before = snap('2026-11-23T21:04:00+00:00', 100)
+        late = snap('2026-11-25T03:51:00+00:00', 130)
+        after = snap('2026-11-25T21:08:00+00:00', 140)
+        # Legacy snapshots lack late_capture; actual Moscow time still detects it.
+        for first, last, expected_delta in [(before, late, 30), (late, after, 10)]:
+            with self.subTest(first=first['captured_at']):
+                result = interval(first, last, ['alice'])
+                self.assertTrue(result['late_capture'])
+                self.assertTrue(result['partial'])
+                self.assertTrue(result['rows'][0]['late_capture'])
+                self.assertTrue(result['rows'][0]['partial'])
+                self.assertEqual(result['rows'][0]['values']['pushUps'], expected_delta)
+
     def test_new_exercise_and_seconds_remain_separate(self):
         a = snap('2026-11-20T21:00:00+00:00', 100, extra={'highPlank': 300})
         b = snap('2026-11-21T21:00:00+00:00', 120, extra={'highPlank': 360, 'squats': 30})

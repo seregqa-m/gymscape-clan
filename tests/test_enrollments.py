@@ -217,6 +217,40 @@ class EnrollmentTests(unittest.TestCase):
         self.assertEqual(data['day_references'][0]['profile_id'], 'stable-id')
         self.assertEqual(data['day_references'][0]['status'], 'missing')
 
+    def test_late_recovery_preserves_gap_delta_and_marks_current_reference(self):
+        baseline = event('2026-11-20T10:00:00+00:00', [player('alice', 100)], 'baseline')
+        before = event('2026-11-23T01:11:00+00:00', [player('alice', 120)])
+        recovery = event('2026-11-25T10:47:00+00:00', [player('alice', 180)])
+        recovery['late_capture'] = True
+        data = self.make_dashboard(['alice'], [baseline, before, recovery])
+        last = data['history'][-1]
+        self.assertEqual(last['gap_days'], 2)
+        self.assertEqual(last['from'], before['captured_at'])
+        self.assertEqual(last['to'], recovery['captured_at'])
+        self.assertTrue(last['late_capture'])
+        self.assertTrue(last['partial'])
+        self.assertTrue(last['rows'][0]['late_capture'])
+        self.assertTrue(last['rows'][0]['partial'])
+        self.assertEqual(last['rows'][0]['values']['pushUps'], 60)
+        self.assertTrue(data['day_references'][0]['late_capture'])
+        self.assertEqual(data['day_references'][0]['captured_at'], recovery['captured_at'])
+        self.assertEqual(period_row(data, 'total', 'alice')['values']['pushUps'], 180)
+        self.assertEqual(period_row(data, 'baseline', 'alice')['values']['pushUps'], 100)
+        self.assertEqual(len(data['history']), 2)  # Never fabricate the missing day's snapshot.
+
+    def test_next_midnight_remains_partial_after_late_reference(self):
+        baseline = event('2026-11-20T10:00:00+00:00', [player('alice', 100)], 'baseline')
+        late = event('2026-11-25T10:47:00+00:00', [player('alice', 180)])
+        after = event('2026-11-25T21:04:00+00:00', [player('alice', 190)])
+        data = self.make_dashboard(['alice'], [baseline, late, after])
+        last = data['history'][-1]
+        self.assertEqual(last['gap_days'], 1)
+        self.assertTrue(last['partial'])
+        self.assertTrue(last['rows'][0]['partial'])
+        self.assertTrue(last['rows'][0]['late_capture'])
+        self.assertEqual(last['rows'][0]['values']['pushUps'], 10)
+        self.assertFalse(data['day_references'][0]['late_capture'])
+
 
 if __name__ == '__main__':
     unittest.main()

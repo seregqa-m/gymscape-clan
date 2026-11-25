@@ -26,6 +26,13 @@ def measured_at(snapshot, player):
     return player.get("captured_at", snapshot["captured_at"]) if player else snapshot["captured_at"]
 
 
+def is_late_capture(snapshot):
+    """Old daily snapshots have no flag; their actual capture time is authoritative."""
+    if not snapshot or snapshot["kind"] != "daily":
+        return False
+    return snapshot.get("late_capture", stamp(snapshot).astimezone(MSK).hour >= 6)
+
+
 def normalize_chain(chain):
     """A previously positive missing exercise stays unknown, not an implicit 0."""
     result, previously_seen, identities = deepcopy(chain), {}, {}
@@ -85,11 +92,15 @@ def difference(before, after, names):
 def interval(before, after, names):
     start, end = stamp(before).astimezone(MSK), stamp(after).astimezone(MSK)
     gap = (end.date() - start.date()).days
-    partial = before["kind"] != "daily" or gap != 1
+    late = is_late_capture(before) or is_late_capture(after)
+    partial = before["kind"] != "daily" or gap != 1 or late
+    rows = difference(before, after, names)
+    for row in rows:
+        row.update({"partial": partial, "late_capture": late})
     return {"date": (end.date() - timedelta(days=1)).isoformat(),
             "from": before["captured_at"], "to": after["captured_at"],
-            "partial": partial, "gap_days": gap,
-            "rows": difference(before, after, names)}
+            "partial": partial, "gap_days": gap, "late_capture": late,
+            "rows": rows}
 
 
 def tracked_intervals(chain, names):
@@ -148,8 +159,9 @@ def tracked_intervals(chain, names):
                 references[name] = snapshot
             gap = ((datetime.fromisoformat(end).astimezone(MSK).date() -
                     datetime.fromisoformat(start).astimezone(MSK).date()).days if start else None)
-            row.update({"from": start, "to": end,
-                        "partial": reference is None or reference["kind"] != "daily" or gap != 1})
+            late = is_late_capture(reference) or is_late_capture(snapshot)
+            row.update({"from": start, "to": end, "late_capture": late,
+                        "partial": reference is None or reference["kind"] != "daily" or gap != 1 or late})
             item["rows"].append(row)
         item["partial"] = item["partial"] or any(r["partial"] for r in item["rows"] if r["status"] == "ok")
         intervals.append(item)
@@ -295,6 +307,7 @@ def build(root=ROOT):
                                "captured_at": measured_at(snapshot, p) if snapshot else None,
                                "kind": snapshot["kind"] if snapshot else None,
                                "boundary_date": snapshot.get("boundary_date") if snapshot else None,
+                               "late_capture": is_late_capture(snapshot),
                                "profile_id": (profile or {}).get("id") or known_id})
     config_path = root / "public_client.json"
     config = read_json(config_path) if config_path.exists() else None

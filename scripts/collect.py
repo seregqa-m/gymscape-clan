@@ -87,9 +87,6 @@ def collect(mode, root=ROOT):
     now = datetime.now(timezone.utc)
     local = now.astimezone(MSK)
     if mode == "auto":
-        if local.hour >= 6:
-            print("Outside midnight capture window; no daily snapshot needed")
-            return
         mode = "daily"
     baseline_path = root / "history/baseline.json"
     if mode == "baseline":
@@ -97,10 +94,8 @@ def collect(mode, root=ROOT):
     else:
         if not baseline_path.exists():
             raise ValueError("Create the baseline before collecting daily snapshots")
-        # Scheduled 00:00 Moscow, allowing realistic queue delays but not noon
-        # manual runs misrepresented as midnight boundaries.
-        if local.hour >= 6:
-            raise ValueError("Daily capture is allowed only 00:00–05:59 Moscow")
+        # Keep the first actual capture even when Actions starts late. The
+        # timestamp and late_capture flag distinguish it from a midnight boundary.
         path = root / "history/daily" / (local.date().isoformat() + ".json")
     if path.exists():
         print("Snapshot already exists; left unchanged:", path.name)
@@ -125,10 +120,18 @@ def collect(mode, root=ROOT):
     # Network/auth failures abort the entire capture; no false zero deltas.
     if names and not any(p["status"] == "ok" for p in players):
         raise ValueError("No player counters returned; refusing an empty snapshot")
+    completed = datetime.now(timezone.utc)
+    completed_local = completed.astimezone(MSK)
+    if completed_local.date() != local.date():
+        raise ValueError("Capture crossed Moscow midnight; no snapshot written. Retry for the new date")
     snapshot = {"schema_version": 1, "kind": mode, "timezone": "Europe/Moscow",
-                "captured_at": datetime.now(timezone.utc).isoformat(),
+                "captured_at": completed.isoformat(),
                 "started_at": now.isoformat(), "boundary_date": local.date().isoformat() if mode == "daily" else None,
                 "source": "exercise_hiscores", "players": players}
+    if mode == "daily":
+        midnight = completed_local.replace(hour=0, minute=0, second=0, microsecond=0)
+        snapshot.update({"late_capture": completed_local.hour >= 6,
+                         "capture_delay_seconds": int((completed_local - midnight).total_seconds())})
     write_json(path, snapshot)
     for p in players:
         print(p["username"], p["status"], len(p["values"]), "exercises")

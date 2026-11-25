@@ -1,7 +1,7 @@
 "use strict";
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { moscowDate, periodsFor, chartDays } = require("../site/metrics.js");
+const { moscowDate, periodsFor, chartDays, unallocatedIntervals } = require("../site/metrics.js");
 
 const NOW = "2026-11-21T09:00:00Z";
 const MIDNIGHT = "2026-11-20T21:05:00Z";
@@ -171,4 +171,44 @@ test("empty roster is supported", () => {
   const periods = periodsFor(data, { captured_at: NOW, players: [] }, NOW);
   assert.equal(periods[1].available, false);
   assert.deepEqual(periods[2].rows, []);
+});
+
+test("a late daily capture counts only subsequent progress and marks today partial", () => {
+  const data = setup();
+  Object.assign(data.day_references[0], { late_capture: true, captured_at: "2026-11-21T08:00:00Z" });
+  const today = period(data, live(), "today");
+  assert.equal(today.rows[0].values.pushUps, 30);
+  assert.equal(today.from, "2026-11-21T08:00:00Z");
+  assert.equal(today.partial, true);
+  assert.match(today.description, /начало дня не учтено/);
+});
+
+test("recover a multi-day total separately while daily values remain unknown", () => {
+  const data = setup();
+  data.history = [{ date: "2026-11-24", from: "2026-11-23T01:11:00Z", to: "2026-11-25T09:00:00Z",
+    partial: true, late_capture: true, gap_days: 2, rows: [player("alice", { pushUps: 350 })] }];
+  const intervals = unallocatedIntervals(data);
+  assert.equal(intervals.length, 1);
+  assert.equal(intervals[0].rows[0].values.pushUps, 350);
+  assert.equal(intervals[0].from, "2026-11-23T01:11:00Z");
+  assert.equal(intervals[0].to, "2026-11-25T09:00:00Z");
+  assert.equal(period(data, null, "yesterday", "2026-11-25T10:00:00Z").available, false);
+  const missing = chartDays(data, null, "2026-11-25T10:00:00Z").filter((day) => day.date >= "2026-11-23");
+  assert.deepEqual(missing.map((day) => day.rows[0].status), ["no_baseline", "no_baseline"]);
+  assert.deepEqual(missing.map((day) => day.rows[0].values), [{}, {}]);
+});
+
+test("recovered intervals respect personal boundaries and preserve unknown counters", () => {
+  const data = setup();
+  data.players.push({ username: "bob" }, { username: "inactive" });
+  Object.assign(data.history[0], { from: "2026-11-18T21:00:00Z", gap_days: 2 });
+  data.history[0].rows = [player("alice", { pushUps: 40, squats: null }),
+    player("bob", { pushUps: 3 }, { from: "2026-11-20T10:00:00Z", to: MIDNIGHT }),
+    player("inactive", { pushUps: 50 }, { inactive: true }), player("removed", { pushUps: 99 })];
+  const original = JSON.stringify(data);
+  const recovered = unallocatedIntervals(data);
+  assert.deepEqual(recovered[0].rows.map((row) => row.username), ["alice"]);
+  assert.equal(recovered[0].rows[0].values.squats, null);
+  assert.equal(JSON.stringify(data), original);
+  assert.deepEqual(unallocatedIntervals(setup()), []);
 });

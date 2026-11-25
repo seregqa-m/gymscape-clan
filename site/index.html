@@ -7,9 +7,9 @@
   <meta name="description" content="Личный зачёт нашего клана GymScape. Повторения, упражнения и ежедневный прогресс.">
   <title>GymScape · Клановый зачёт</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css?v=grouped-bars-1">
-  <script src="./metrics.js" defer></script>
-  <script src="./app.js?v=grouped-bars-1" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=late-captures-1">
+  <script src="./metrics.js?v=late-captures-1" defer></script>
+  <script src="./app.js?v=late-captures-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#leaderboard">К рейтингу</a>
@@ -19,7 +19,7 @@
         <svg class="brand-mark" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 9h5v14H5zM22 9h5v14h-5zM1 12h3v8H1zM28 12h3v8h-3zM11 14h10v4H11z" fill="currentColor"/></svg>
         <span>GYMSCAPE<span class="brand-divider">/</span><span class="brand-clan">CLAN</span></span>
       </a>
-      <div class="topbar-actions"><div class="schedule-label"><span class="status-dot"></span>Снимок каждый день в 00:00 МСК</div><button id="manage-participants" class="participants-toggle" type="button" aria-controls="participants" aria-expanded="false">Участники</button></div>
+      <div class="topbar-actions"><div class="schedule-label"><span class="status-dot"></span>Ежедневный снимок · план 00:00 МСК</div><button id="manage-participants" class="participants-toggle" type="button" aria-controls="participants" aria-expanded="false">Участники</button></div>
     </header>
 
     <main>
@@ -75,6 +75,7 @@
           </div>
 
           <p id="period-note" class="period-note"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor"/><path d="M8 7v4M8 4.5v.5" stroke="currentColor" stroke-width="1.5"/></svg><span>Дни считаются по московскому времени.</span></p>
+          <p id="capture-warning" class="capture-warning" role="status" hidden></p>
 
           <section class="clan-chart-panel" aria-labelledby="clan-chart-title">
             <div class="clan-chart-heading">
@@ -82,6 +83,7 @@
               <div class="chart-range"><label for="chart-from">С<input id="chart-from" type="date"></label><label for="chart-to">По<input id="chart-to" type="date"></label></div>
             </div>
             <p id="chart-range-error" class="participant-feedback is-error" role="alert" hidden>Начало периода должно быть не позже окончания.</p>
+            <div id="history-recovery" class="history-recovery" hidden></div>
             <div id="history-chart" class="history-chart"><div class="chart-empty"><strong>Загружаем историю</strong><p>Здесь будут дневные результаты всех участников.</p></div></div>
             <div id="chart-legend" class="chart-legend" aria-label="Участники на графике"></div>
             <div id="chart-inspector" class="chart-inspector" hidden>
@@ -117,7 +119,7 @@
             </aside>
           </div>
         </section>
-        <p class="calculation-note">Тотал и сегодняшний прогресс обновляются при открытии страницы и по кнопке «Обновить». История сохраняется ежедневно около 00:00 МСК. Поздняя синхронизация игры и задержки снимков могут сдвигать результаты между днями.</p>
+        <p class="calculation-note">Тотал и сегодняшний прогресс обновляются при открытии страницы и по кнопке «Обновить». Сбор истории запланирован на 00:00 МСК, фактическое время зависит от очереди GitHub. Поздняя синхронизация игры и задержки снимков могут сдвигать результаты между днями.</p>
       </div>
     </main>
 

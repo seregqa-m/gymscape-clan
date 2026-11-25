@@ -74,7 +74,7 @@
       const current = readings.get(key(player.username));
       const end = current?.captured_at || live?.captured_at || null;
       const start = reference?.captured_at || null;
-      const common = { from: start, to: end, partial: reference?.kind !== "daily", in_progress: true };
+      const common = { from: start, to: end, partial: reference?.kind !== "daily" || Boolean(reference?.late_capture), in_progress: true };
       if (!current || current.status !== "ok" || moscowDate(end) !== today) {
         return unknown(player.username, "missing", "missing_live", common);
       }
@@ -101,11 +101,13 @@
     });
     const measured = rows.filter((row) => row.status === "ok");
     const partial = measured.some((row) => row.partial);
+    const late = measured.some((row) => references.get(key(row.username))?.late_capture);
     return { id: "today", label: "Сегодня", date: today, available: measured.length > 0,
       from: measured.length ? measured.map((row) => row.from).sort((a, b) => moment(a) - moment(b))[0] : null,
       to: live?.captured_at || null, partial, in_progress: true,
       description: !live ? "Для сегодняшнего результата нужен свежий замер. Обнови статистику." : !measured.length
         ? "Пока нет подходящего начального снимка за сегодня. Результат не подменяется нулём."
+        : late ? "Сегодняшний снимок сделан с опозданием. Здесь только прирост после времени снимка, указанного ниже; начало дня не учтено."
         : partial ? "Прирост за сегодня с начала наблюдения. У недавно добавленных участников день неполный."
           : "Прирост с ночного снимка до последнего обновления. Фактическое время начала указано ниже; день ещё идёт.",
       rows };
@@ -145,7 +147,7 @@
       ...closed, id: "yesterday", label: "Вчера", date: yesterday, available,
       from: segment?.from || null, to: segment?.to || null, partial: Boolean(closed.partial), in_progress: false,
       description: !available ? "За вчера пока нет двух подходящих снимков. Более старый день здесь не показывается."
-        : closed.partial ? "Прирост за вчера. Для части участников наблюдение началось в течение дня."
+        : closed.partial ? "Неполный интервал за вчера: наблюдение началось в течение дня или снимок был сделан с опозданием."
           : "Прирост между ночными снимками за вчера. Фактические границы указаны ниже по московскому времени.",
     }];
   }
@@ -168,5 +170,22 @@
     return days;
   }
 
-  return { moscowDate, periodsFor, chartDays };
+  function unallocatedIntervals(data) {
+    const active = new Set(data.players.map((player) => key(player.username)));
+    return data.history.map((segment) => {
+      const rows = segment.rows.filter((row) => {
+        const from = row.from || segment.from;
+        const to = row.to || segment.to;
+        const first = moscowDate(from), last = moscowDate(to);
+        return active.has(key(row.username)) && row.status === "ok" && !row.inactive &&
+          first && last && moment(from) < moment(to) &&
+          Date.parse(last) - Date.parse(first) > DAY;
+      }).map((row) => ({ ...row, from: row.from || segment.from, to: row.to || segment.to }));
+      if (!rows.length) return null;
+      return { from: rows.map((row) => row.from).sort((a, b) => moment(a) - moment(b))[0],
+        to: rows.map((row) => row.to).sort((a, b) => moment(b) - moment(a))[0], rows };
+    }).filter(Boolean);
+  }
+
+  return { moscowDate, periodsFor, chartDays, unallocatedIntervals };
 });
