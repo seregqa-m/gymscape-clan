@@ -1,0 +1,435 @@
+{
+  "schema_version": 1,
+  "kind": "daily",
+  "timezone": "Europe/Moscow",
+  "captured_at": "2026-11-26T03:15:52.536946+00:00",
+  "started_at": "2026-11-26T03:15:51.142658+00:00",
+  "boundary_date": "2026-11-26",
+  "source": "exercise_hiscores",
+  "players": [
+    {
+      "username": "seregqa",
+      "canonical_username": "seregqa",
+      "status": "ok",
+      "values": {
+        "highKnees": 14,
+        "highPlank": 385,
+        "jumpingJacks": 2770,
+        "labShadowBoxing": 186,
+        "legLifts": 2913,
+        "lunges": 1700,
+        "pushUps": 2734,
+        "sitUps": 255,
+        "squats": 3026,
+        "tutorial": 2
+      },
+      "profile": {
+        "id": "8723d63b-f0db-4fe2-9871-dce66eea4d65",
+        "username": "seregqa",
+        "total_level": 468,
+        "combat_level": 47,
+        "coins": 11607,
+        "skills_xp": {
+          "magic": 14328,
+          "melee": 61013,
+          "mining": 199515,
+          "ranged": 103591,
+          "slayer": 53415,
+          "defense": 73413,
+          "imbuing": 4862,
+          "crafting": 95915,
+          "smithing": 234630,
+          "fletching": 143795,
+          "hitpoints": 87287,
+          "woodcutting": 113015
+        }
+      },
+      "captured_at": "2026-11-26T03:15:51.642330+00:00"
+    },
+    {
+      "username": "Alexdander",
+      "canonical_username": "Alexdander",
+      "status": "ok",
+      "values": {
+        "highKnees": 54,
+        "highPlank": 113,
+        "jumpingJacks": 3264,
+        "legLifts": 631,
+        "lunges": 1897,
+        "pushUps": 2939,
+        "sitUps": 989,
+        "squats": 3273,
+        "tutorial": 2
+      },
+      "profile": {
+        "id": "1160b207-8005-413a-81cc-6fa314d54314",
+        "username": "Alexdander",
+        "total_level": 451,
+        "combat_level": 43,
+        "coins": 1908,
+        "skills_xp": {
+          "magic": 53750,
+          "melee": 50122,
+          "mining": 86925,
+          "ranged": 62070,
+          "slayer": 44917,
+          "defense": 69152,
+          "imbuing": 18239,
+          "crafting": 54735,
+          "smithing": 152420,
+          "fletching": 139590,
+          "hitpoints": 81510,
+          "woodcutting": 55430
+        }
+      },
+      "captured_at": "2026-11-26T03:15:51.646491+00:00"
+    },
+    {
+      "username": "ARRRTTT",
+      "canonical_username": "ARRRTTT",
+      "status": "ok",
+      "values": {
+        "highPlank": 434,
+        "jumpingJacks": 3094,
+        "labShadowBoxing": 178,
+        "legLifts": 59,
+        "lunges": 1698,
+        "pushUps": 4204,
+        "sitUps": 2105,
+        "squats": 2883,
+        "tutorial": 2
+      },
+      "profile": {
+        "id": "5e224644-7ced-44d2-bb67-cf345b038097",
+        "username": "ARRRTTT",
+        "total_level": 414,
+        "combat_level": 52,
+        "coins": 24919,
+        "skills_xp": {
+          "magic": 1100,
+          "melee": 148439,
+          "mining": 338100,
+          "ranged": 17547,
+          "slayer": 55270,
+          "defense": 147506,
+          "imbuing": 100,
+          "crafting": 41445,
+          "smithing": 230470,
+          "fletching": 33920,
+          "hitpoints": 107950,
+          "woodcutting": 56590
+        }
+      },
+      "captured_at": "2026-11-26T03:15:51.641795+00:00"
+    },
+    {
+      "username": "Mishqa",
+      "canonical_username": "Mishqa",
+      "status": "ok",
+      "values": {
+        "highPlank": 853,
+        "jumpingJacks": 1700,
+        "labShadowBoxing": 83,
+        "legLifts": 14,
+        "lunges": 1400,
+        "pushUps": 1487,
+        "sitUps": 958,
+        "squats": 2199,
+        "tutorial": 2
+      },
+      "profile": {
+        "id": "36091cd7-310f-43f6-b90a-d1c7de7ec603",
+        "username": "Mishqa",
+        "total_level": 395,
+        "combat_level": 40,
+        "coins": 12486,
+        "skills_xp": {
+          "magic": 360,
+          "melee": 66573,
+          "mining": 389160,
+          "ranged": 33498,
+          "slayer": 17915,
+          "defense": 29528,
+          "imbuing": 622,
+          "crafting": 77615,
+          "smithing": 191165,
+          "fletching": 83605,
+          "hitpoints": 46140,
+          "woodcutting": 109670
+        }
+      },
+      "captured_at": "2026-11-26T03:15:51.864858+00:00"
+    },
+    {
+      "username": "Sasaii",
+      "canonical_username": "Sasaii",
+      "status": "ok",
+      "values": {
+        "highKnees": 91,
+        "highPlank": 477,
+        "jumpingJacks": 741,
+        "kneePushUps": 69,
+        "labShadowBoxing": 93,
+        "legLifts": 114,
+        "lunges": 483,
+        "pushUps": 808,
+        "sitUps": 1060,
+        "squats": 1628,
+        "tutorial": 2
+      },
+      "profile": {
+        "id": "b0c5c63e-046d-4a7c-b4b0-d93dde4440d0",
+        "username": "Sasaii",
+        "total_level": 311,
+        "combat_level": 31,
+        "coins": 2543,
+        "skills_xp": {
+          "magic": 3870,
+          "melee": 15218,
+          "mining": 59050,
+          "ranged": 21088,
+          "slayer": 9550,
+          "defense": 28610,
+          "imbuing": 3448,
+          "crafting": 11680,
+          "smithing": 54340,
+          "fletching": 41015,
+          "hitpoints": 25492,
+          "woodcutting": 38040
+        }
+      },
+      "captured_at": "2026-11-26T03:15:51.877637+00:00"
+    },
+    {
+      "username": "elejke",
+      "canonical_username": "elejke",
+      "status": "ok",
+      "values": {
+        "highKnees": 45,
+        "highPlank": 173,
+        "jumpingJacks": 441,
+        "lunges": 618,
+        "pushUps": 1039,
+        "sitUps": 837,
+        "squats": 1393
+      },
+      "profile": {
+        "id": "a83644b3-881d-4416-a6bb-9470e39a2d3a",
+        "username": "elejke",
+        "total_level": 342,
+        "combat_level": 36,
+        "coins": 4881,
+        "skills_xp": {
+          "magic": 512,
+          "melee": 40078,
+          "mining": 203045,
+          "ranged": 1428,
+          "slayer": 12406,
+          "defense": 36222,
+          "imbuing": 1197,
+          "crafting": 87215,
+          "smithing": 89580,
+          "fletching": 23130,
+          "hitpoints": 28663,
+          "woodcutting": 167190
+        }
+      },
+      "captured_at": "2026-11-26T03:15:51.917017+00:00"
+    },
+    {
+      "username": "Relca",
+      "canonical_username": "Relca",
+      "status": "ok",
+      "values": {
+        "highKnees": 93,
+        "highPlank": 1414,
+        "jumpingJacks": 1041,
+        "kneePushUps": 29,
+        "legLifts": 370,
+        "lunges": 747,
+        "pushUps": 648,
+        "sitUps": 430,
+        "squats": 1941,
+        "tutorial": 2
+      },
+      "profile": {
+        "id": "4a686c32-0b5b-4ae0-9d62-6989889e641f",
+        "username": "Relca",
+        "total_level": 347,
+        "combat_level": 31,
+        "coins": 2867,
+        "skills_xp": {
+          "magic": 1712,
+          "melee": 20565,
+          "mining": 243375,
+          "ranged": 12034,
+          "slayer": 9287,
+          "defense": 31891,
+          "imbuing": 5051,
+          "crafting": 50980,
+          "smithing": 100635,
+          "fletching": 21285,
+          "hitpoints": 24769,
+          "woodcutting": 109100
+        }
+      },
+      "captured_at": "2026-11-26T03:15:52.147769+00:00"
+    },
+    {
+      "username": "D1VAn",
+      "canonical_username": "D1VAn",
+      "status": "ok",
+      "values": {
+        "highPlank": 84,
+        "jumpingJacks": 313,
+        "kneePushUps": 77,
+        "legLifts": 579,
+        "lunges": 81,
+        "pushUps": 850,
+        "sitUps": 636,
+        "squats": 819
+      },
+      "profile": {
+        "id": "5a985d52-ea39-4627-ab25-f31560212ab5",
+        "username": "D1VAn",
+        "total_level": 305,
+        "combat_level": 30,
+        "coins": 4688,
+        "skills_xp": {
+          "magic": 0,
+          "melee": 29170,
+          "mining": 199380,
+          "ranged": 17238,
+          "slayer": 1744,
+          "defense": 9128,
+          "imbuing": 0,
+          "crafting": 62895,
+          "smithing": 69535,
+          "fletching": 32705,
+          "hitpoints": 20867,
+          "woodcutting": 69535
+        }
+      },
+      "captured_at": "2026-11-26T03:15:52.112901+00:00"
+    },
+    {
+      "username": "onepunch",
+      "canonical_username": "onepunch",
+      "status": "missing",
+      "values": {},
+      "profile": null,
+      "captured_at": "2026-11-26T03:15:52.187032+00:00"
+    },
+    {
+      "username": "HawkHunter9892",
+      "canonical_username": "HawkHunter9892",
+      "status": "missing",
+      "values": {},
+      "profile": null,
+      "captured_at": "2026-11-26T03:15:52.339654+00:00"
+    },
+    {
+      "username": "keanuwind",
+      "canonical_username": "keanuwind",
+      "status": "ok",
+      "values": {
+        "jumpingJacks": 34,
+        "legLifts": 5,
+        "pushUps": 15,
+        "sitUps": 24,
+        "squats": 188,
+        "tutorial": 2
+      },
+      "profile": {
+        "id": "8d2e2893-508f-4a50-bdf4-21a482123ec1",
+        "username": "keanuwind",
+        "total_level": 206,
+        "combat_level": 9,
+        "coins": 8,
+        "skills_xp": {
+          "magic": 0,
+          "melee": 1692,
+          "mining": 134180,
+          "ranged": 0,
+          "slayer": 0,
+          "defense": 608,
+          "imbuing": 0,
+          "crafting": 4805,
+          "smithing": 45935,
+          "fletching": 43310,
+          "hitpoints": 2901,
+          "woodcutting": 211640
+        }
+      },
+      "captured_at": "2026-11-26T03:15:52.478265+00:00"
+    },
+    {
+      "username": "millennial falcon",
+      "canonical_username": "millennial falcon",
+      "status": "ok",
+      "values": {
+        "highPlank": 22,
+        "jumpingJacks": 76,
+        "lunges": 24,
+        "pushUps": 20,
+        "sitUps": 61,
+        "squats": 111,
+        "tutorial": 2
+      },
+      "profile": {
+        "id": "9634f556-24b9-4d5e-b1a3-733c7b23f792",
+        "username": "millennial falcon",
+        "total_level": 109,
+        "combat_level": 9,
+        "coins": 12,
+        "skills_xp": {
+          "magic": 0,
+          "melee": 1154,
+          "mining": 13495,
+          "ranged": 43,
+          "slayer": 0,
+          "defense": 1219,
+          "imbuing": 413,
+          "crafting": 2415,
+          "smithing": 3780,
+          "fletching": 2330,
+          "hitpoints": 2915,
+          "woodcutting": 12115
+        }
+      },
+      "captured_at": "2026-11-26T03:15:52.409433+00:00"
+    },
+    {
+      "username": "dimqa",
+      "canonical_username": "dimqa",
+      "status": "ok",
+      "values": {
+        "tutorial": 1
+      },
+      "profile": {
+        "id": "65a64c63-f9a1-4f41-994c-788ac1b40c87",
+        "username": "dimqa",
+        "total_level": 21,
+        "combat_level": 3,
+        "coins": 0,
+        "skills_xp": {
+          "magic": 0,
+          "melee": 80,
+          "mining": 0,
+          "ranged": 0,
+          "slayer": 0,
+          "defense": 0,
+          "imbuing": 0,
+          "crafting": 0,
+          "smithing": 0,
+          "fletching": 0,
+          "hitpoints": 2094,
+          "woodcutting": 0
+        }
+      },
+      "captured_at": "2026-11-26T03:15:52.536713+00:00"
+    }
+  ],
+  "late_capture": true,
+  "capture_delay_seconds": 22552
+}
